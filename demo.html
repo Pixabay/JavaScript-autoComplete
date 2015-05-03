@@ -189,11 +189,12 @@ my_autoComplete.destroy();</code></pre>
             To further reduce server impact, it's possible to abort unfinished AJAX requests before starting new ones.
             Again using jQuery's AJAX method for brevity:
         </p>
-        <pre class="prettyprint"><code>new autoComplete({
+        <pre class="prettyprint"><code>var xhr;
+new autoComplete({
     selector: 'input[name=&quot;q&quot;]',
     source: function(term, response){
         try { xhr.abort(); } catch(e){}
-        var xhr = $.getJSON('/some/ajax/url/', { q: term }, function(data){ response(data); });
+        xhr = $.getJSON('/some/ajax/url/', { q: term }, function(data){ response(data); });
     }
 });</code></pre>
         <p>
