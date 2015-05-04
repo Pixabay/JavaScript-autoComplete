@@ -10,7 +10,9 @@ var autoComplete = (function(){
     function autoComplete(options){
         if (!document.querySelector) return;
 
-        // event helpers
+        // helpers
+        function hasClass(el, className){ return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className); }
+
         function triggerEvent(el, type){
             if (document.createEvent) { var e = document.createEvent('HTMLEvents'); e.initEvent(type, true, true); el.dispatchEvent(e); }
             else { var e = document.createEventObject(); e.eventType = type; el.fireEvent('on'+e.eventType, e); }
@@ -25,7 +27,7 @@ var autoComplete = (function(){
         function live(container, event, elClass, cb){
             addEvent(container, event, function(e){
                 var found, el = e.target || e.srcElement;
-                while (el && !(found = ~el.className.indexOf(elClass))) el = el.parentElement;
+                while (el && !(found = hasClass(el, elClass))) el = el.parentElement;
                 if (found) cb.call(el, e);
             });
         }
@@ -101,7 +103,7 @@ var autoComplete = (function(){
             });
 
             live(that.sc, 'mouseup', 'autocomplete-suggestion', function(e){
-                if (~this.className.indexOf('autocomplete-suggestion')) { // else outside click
+                if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
                     var v = this.getAttribute('data-val');
                     that.value = v;
                     o.onSelect(e, v, this);

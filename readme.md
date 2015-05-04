@@ -15,7 +15,7 @@ http://goodies.pixabay.com/javascript/auto-complete/demo.html
 
 ## Features
 
-* Lightweight: 5.4 kB of JavaScript - less than 2.4 kB gzipped (smaller IE9+ version available)
+* Lightweight: 5.4 kB of JavaScript - less than 2.4 kB gzipped
 * Fully flexible data source
 * Smart caching, delay and minimum character settings
 * Callbacks
