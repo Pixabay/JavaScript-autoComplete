@@ -18,7 +18,7 @@ var autoComplete = (function(){
             else { var e = document.createEventObject(); e.eventType = type; el.fireEvent('on'+e.eventType, e); }
         }
         function addEvent(el, type, handler){
-            if (el.addEventListener) el.addEventListener(type, handler); else el.attachEvent('on'+type, handler);
+            if (el.attachEvent) el.attachEvent('on'+type, handler); else el.addEventListener(type, handler);
         }
         function removeEvent(el, type, handler){
             // if (el.removeEventListener) not working in IE11
