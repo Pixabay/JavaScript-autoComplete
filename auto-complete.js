@@ -45,7 +45,7 @@ var autoComplete = (function(){
             },
             onSelect: function(e, term, item){}
         };
-        for (var k in options) { if (Object.prototype.hasOwnProperty.call(options, k)) o[k]=options[k]; }
+        for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
         // init
         var elems = typeof o.selector == 'object' ? [o.selector] : document.querySelectorAll(o.selector);
