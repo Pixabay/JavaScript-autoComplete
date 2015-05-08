@@ -24,8 +24,8 @@ var autoComplete = (function(){
             // if (el.removeEventListener) not working in IE11
             if (el.detachEvent) el.detachEvent('on'+type, handler); else el.removeEventListener(type, handler);
         }
-        function live(container, event, elClass, cb){
-            addEvent(container, event, function(e){
+        function live(event, elClass, cb, context){
+            addEvent(context || document, event, function(e){
                 var found, el = e.target || e.srcElement;
                 while (el && !(found = hasClass(el, elClass))) el = el.parentElement;
                 if (found) cb.call(el, e);
@@ -91,18 +91,18 @@ var autoComplete = (function(){
             addEvent(window, 'resize', that.updateSC);
             document.body.appendChild(that.sc);
 
-            live(that.sc, 'mouseleave', 'autocomplete-suggestion', function(e){
+            live('mouseleave', 'autocomplete-suggestion', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                 if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); }, 20);
-            });
+            }, that.sc);
 
-            live(that.sc, 'mouseover', 'autocomplete-suggestion', function(e){
+            live('mouseover', 'autocomplete-suggestion', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                 if (sel) sel.className = sel.className.replace('selected', '');
                 this.className += ' selected';
-            });
+            }, that.sc);
 
-            live(that.sc, 'mouseup', 'autocomplete-suggestion', function(e){
+            live('mouseup', 'autocomplete-suggestion', function(e){
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
                     var v = this.getAttribute('data-val');
                     that.value = v;
@@ -110,7 +110,7 @@ var autoComplete = (function(){
                     that.focus();
                     that.sc.style.display = 'none';
                 }
-            });
+            }, that.sc);
 
             that.blurHandler = function(){
                 try { var over_sb = document.querySelector('.autocomplete-suggestions:hover'); } catch(e){ var over_sb = 0; }
