@@ -21,8 +21,8 @@ var autoComplete = (function(){
             if (el.addEventListener) el.addEventListener(type, handler); else el.attachEvent('on'+type, handler);
         }
         function removeEvent(el, type, handler){
-            // if (el.removeEventListener) not workign in IE11
-            if (!el.detachEvent) el.removeEventListener(type, handler); else el.detachEvent('on'+type, handler);
+            // if (el.removeEventListener) not working in IE11
+            if (el.detachEvent) el.detachEvent('on'+type, handler); else el.removeEventListener(type, handler);
         }
         function live(container, event, elClass, cb){
             addEvent(container, event, function(e){
