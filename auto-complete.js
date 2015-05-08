@@ -24,7 +24,7 @@ var autoComplete = (function(){
             // if (el.removeEventListener) not working in IE11
             if (el.detachEvent) el.detachEvent('on'+type, handler); else el.removeEventListener(type, handler);
         }
-        function live(event, elClass, cb, context){
+        function live(elClass, event, cb, context){
             addEvent(context || document, event, function(e){
                 var found, el = e.target || e.srcElement;
                 while (el && !(found = hasClass(el, elClass))) el = el.parentElement;
@@ -91,18 +91,18 @@ var autoComplete = (function(){
             addEvent(window, 'resize', that.updateSC);
             document.body.appendChild(that.sc);
 
-            live('mouseleave', 'autocomplete-suggestion', function(e){
+            live('autocomplete-suggestion', 'mouseleave', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                 if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); }, 20);
             }, that.sc);
 
-            live('mouseover', 'autocomplete-suggestion', function(e){
+            live('autocomplete-suggestion', 'mouseover', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                 if (sel) sel.className = sel.className.replace('selected', '');
                 this.className += ' selected';
             }, that.sc);
 
-            live('mouseup', 'autocomplete-suggestion', function(e){
+            live('autocomplete-suggestion', 'mouseup', function(e){
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
                     var v = this.getAttribute('data-val');
                     that.value = v;
