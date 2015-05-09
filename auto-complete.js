@@ -73,10 +73,7 @@ var autoComplete = (function(){
                 if (!resize) {
                     that.sc.style.display = 'block';
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
-                    if (!that.sc.suggestionHeight) {
-                        var rect2 = that.sc.querySelector('.autocomplete-suggestion').getBoundingClientRect();
-                        that.sc.suggestionHeight = rect2.bottom - rect2.top;
-                    }
+                    if (!that.sc.suggestionHeight) that.sc.suggestionHeight = that.sc.querySelector('.autocomplete-suggestion').offsetHeight;
                     if (that.sc.suggestionHeight)
                         if (!next) that.sc.scrollTop = 0;
                         else {
