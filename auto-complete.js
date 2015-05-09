@@ -63,13 +63,10 @@ var autoComplete = (function(){
             that.last_val = '';
 
             that.updateSC = function(resize, next){
-                var rect = that.getBoundingClientRect(),
-                    scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop,
-                    scrollLeft = (document.documentElement && document.documentElement.scrollLeft) || document.body.scrollLeft;
-                that.sc.style.left = rect.left + scrollLeft + 'px';
-                that.sc.style.top = rect.bottom + scrollTop + 1 + 'px';
+                var rect = that.getBoundingClientRect();
+                that.sc.style.left = rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + 'px';
+                that.sc.style.top = rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + 1 + 'px';
                 that.sc.style.width = rect.right - rect.left + 'px'; // outerWidth
-
                 if (!resize) {
                     that.sc.style.display = 'block';
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
