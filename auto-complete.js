@@ -1,5 +1,5 @@
 /*
-    JavaScript autoComplete v1.0.0 beta
+    JavaScript autoComplete v1.0.0
     Copyright (c) 2014 Simon Steinberger / Pixabay
     GitHub: https://github.com/Pixabay/JavaScript-autoComplete
     License: http://www.opensource.org/licenses/mit-license.php
@@ -167,7 +167,7 @@ var autoComplete = (function(){
 
             that.keyupHandler = function(e){
                 var key = window.event ? e.keyCode : e.which;
-                if (key != 27 && key != 38 && key != 40 && key != 37 && key != 39) {
+                if (key != 38 && key != 40 && key != 37 && key != 39 && key != 13 && key != 27) {
                     var val = that.value;
                     if (val.length >= o.minChars) {
                         if (val != that.last_val) {

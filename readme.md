@@ -22,6 +22,10 @@ http://goodies.pixabay.com/javascript/auto-complete/demo.html
 
 ## Changelog
 
-### Version 1.0.0 beta - 2015/05/102
+### Version 1.0.0 - 2015/06/07
+
+* Prevent unnecessary search on pressing enter.
+
+### Version 1.0.0 beta - 2015/05/12
 
 * First release
