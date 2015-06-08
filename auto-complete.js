@@ -97,7 +97,6 @@ var autoComplete = (function(){
                     var v = this.getAttribute('data-val');
                     that.value = v;
                     o.onSelect(e, v, this);
-                    that.focus();
                     that.sc.style.display = 'none';
                 }
             }, that.sc);
@@ -150,7 +149,7 @@ var autoComplete = (function(){
                 // enter
                 else if (key == 13) {
                     var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                    if (sel) { o.onSelect(e, sel.getAttribute('data-val'), sel); setTimeout(function(){ that.focus(); that.sc.style.display = 'none'; }, 10); }
+                    if (sel) { o.onSelect(e, sel.getAttribute('data-val'), sel); setTimeout(function(){ that.sc.style.display = 'none'; }, 10); }
                 }
             };
             addEvent(that, 'keydown', that.keydownHandler);
