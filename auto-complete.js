@@ -1,5 +1,5 @@
 /*
-    JavaScript autoComplete v1.0.0
+    JavaScript autoComplete v1.0.1
     Copyright (c) 2014 Simon Steinberger / Pixabay
     GitHub: https://github.com/Pixabay/JavaScript-autoComplete
     License: http://www.opensource.org/licenses/mit-license.php
@@ -13,10 +13,6 @@ var autoComplete = (function(){
         // helpers
         function hasClass(el, className){ return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className); }
 
-        function triggerEvent(el, type){
-            if (document.createEvent) { var e = document.createEvent('HTMLEvents'); e.initEvent(type, true, true); el.dispatchEvent(e); }
-            else { var e = document.createEventObject(); e.eventType = type; el.fireEvent('on'+e.eventType, e); }
-        }
         function addEvent(el, type, handler){
             if (el.attachEvent) el.attachEvent('on'+type, handler); else el.addEventListener(type, handler);
         }
@@ -111,15 +107,9 @@ var autoComplete = (function(){
                 if (!over_sb) {
                     that.last_val = that.value;
                     that.sc.style.display = 'none';
-                } else that.focus();
+                } else if (that !== document.activeElement) that.focus();
             };
             addEvent(that, 'blur', that.blurHandler);
-
-            that.focusHandler = function(){
-                that.last_val = '\n';
-                triggerEvent(that, 'keyup');
-            };
-            if (!o.minChars) addEvent(that, 'focus', that.focusHandler);
 
             var suggest = function(data){
                 var val = that.value;
@@ -190,6 +180,12 @@ var autoComplete = (function(){
                 }
             };
             addEvent(that, 'keyup', that.keyupHandler);
+
+            that.focusHandler = function(e){
+                that.last_val = '\n';
+                that.keyupHandler(e)
+            };
+            if (!o.minChars) addEvent(that, 'focus', that.focusHandler);
         }
 
         // public destroy method

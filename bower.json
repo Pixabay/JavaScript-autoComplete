@@ -1,7 +1,7 @@
 {
     "name": "javascript-auto-complete",
 	"description": "An extremely lightweight vanilla JavaScript completion suggester.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "homepage": "https://github.com/Pixabay/JavaScript-autoComplete",
     "authors": [{
         "name": "Simon Steinberger",
