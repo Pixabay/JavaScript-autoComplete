@@ -22,6 +22,12 @@ https://goodies.pixabay.com/javascript/auto-complete/demo.html
 
 ## Changelog
 
+### Version 1.0.2 - 2015/08/15
+
+* Fixed: Hide suggestions on fast input.
+* Fixed: Select item with tab.
+* Fixed: Incorrect selection by mouse when suggestions are scrolled down.
+
 ### Version 1.0.1 - 2015/06/08
 
 * Simplified code and minor bug fixes.

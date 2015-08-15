@@ -1,5 +1,5 @@
 /*
-    JavaScript autoComplete v1.0.1
+    JavaScript autoComplete v1.0.2
     Copyright (c) 2014 Simon Steinberger / Pixabay
     GitHub: https://github.com/Pixabay/JavaScript-autoComplete
     License: http://www.opensource.org/licenses/mit-license.php
@@ -92,7 +92,7 @@ var autoComplete = (function(){
                 this.className += ' selected';
             }, that.sc);
 
-            live('autocomplete-suggestion', 'mouseup', function(e){
+            live('autocomplete-suggestion', 'mousedown', function(e){
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
                     var v = this.getAttribute('data-val');
                     that.value = v;
@@ -106,7 +106,8 @@ var autoComplete = (function(){
                 if (!over_sb) {
                     that.last_val = that.value;
                     that.sc.style.display = 'none';
-                } else if (that !== document.activeElement) that.focus();
+                    setTimeout(function(){ that.sc.style.display = 'none'; }, 350); // hide suggestions on fast input
+                } else if (that !== document.activeElement) setTimeout(function(){ that.focus(); }, 20);
             };
             addEvent(that, 'blur', that.blurHandler);
 
@@ -147,9 +148,9 @@ var autoComplete = (function(){
                 // esc
                 else if (key == 27) { that.value = that.last_val; that.sc.style.display = 'none'; }
                 // enter
-                else if (key == 13) {
+                else if (key == 13 || key == 9) {
                     var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                    if (sel) { o.onSelect(e, sel.getAttribute('data-val'), sel); setTimeout(function(){ that.sc.style.display = 'none'; }, 10); }
+                    if (sel && that.sc.style.display != 'none') { o.onSelect(e, sel.getAttribute('data-val'), sel); setTimeout(function(){ that.sc.style.display = 'none'; }, 20); }
                 }
             };
             addEvent(that, 'keydown', that.keydownHandler);
