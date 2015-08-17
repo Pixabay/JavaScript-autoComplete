@@ -119,6 +119,7 @@ my_autoComplete.destroy();</code></pre>
                 <td>
                     <p>A function that gives you control over how suggestions are displayed. Default:</p>
 <pre class="prettyprint" style="white-space:pre-wrap"><code>renderItem: function (item, search){
+    search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&amp;');
     var re = new RegExp(&quot;(&quot; + search.split(' ').join('|') + &quot;)&quot;, &quot;gi&quot;);
     return '&lt;div class=&quot;autocomplete-suggestion&quot; data-val=&quot;' + item + '&quot;&gt;' + item.replace(re, &quot;&lt;b&gt;$1&lt;/b&gt;&quot;) + '&lt;/div&gt;';
 }</code></pre>
@@ -223,6 +224,7 @@ new autoComplete({
         suggest(suggestions);
     },
     renderItem: function (item, search){
+        search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&amp;');
         var re = new RegExp(&quot;(&quot; + search.split(' ').join('|') + &quot;)&quot;, &quot;gi&quot;);
         return '&lt;div class=&quot;autocomplete-suggestion&quot; data-langname=&quot;'+item[0]+'&quot; data-lang=&quot;'+item[1]+'&quot; data-val=&quot;'+search+'&quot;&gt;&lt;img src=&quot;img/'+item[1]+'.png&quot;&gt; '+item[0].replace(re, &quot;&lt;b&gt;$1&lt;/b&gt;&quot;)+'&lt;/div&gt;';
     },
@@ -287,6 +289,7 @@ new autoComplete({
                 suggest(suggestions);
             },
             renderItem: function (item, search){
+                search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&amp;');
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
                 return '<div class="autocomplete-suggestion" data-langname="'+item[0]+'" data-lang="'+item[1]+'" data-val="'+search+'"><img src="img/'+item[1]+'.png"> '+item[0].replace(re, "<b>$1</b>")+'</div>';
             },
