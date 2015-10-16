@@ -159,7 +159,7 @@ var autoComplete = (function(){
 
             that.keyupHandler = function(e){
                 var key = window.event ? e.keyCode : e.which;
-                if ((key < 35 || key > 40) && key != 13 && key != 27) {
+                if (!key || (key < 35 || key > 40) && key != 13 && key != 27) {
                     var val = that.value;
                     if (val.length >= o.minChars) {
                         if (val != that.last_val) {
