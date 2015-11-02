@@ -1,5 +1,5 @@
 /*
-    JavaScript autoComplete v1.0.2
+    JavaScript autoComplete v1.0.3
     Copyright (c) 2014 Simon Steinberger / Pixabay
     GitHub: https://github.com/Pixabay/JavaScript-autoComplete
     License: http://www.opensource.org/licenses/mit-license.php
@@ -54,7 +54,6 @@ var autoComplete = (function(){
             that.sc = document.createElement('div');
             that.sc.className = 'autocomplete-suggestions '+o.menuClass;
 
-            that.setAttribute('data-sc', that.sc);
             that.autocompleteAttr = that.getAttribute('autocomplete');
             that.setAttribute('autocomplete', 'off');
             that.cache = {};

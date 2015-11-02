@@ -22,6 +22,10 @@ https://goodies.pixabay.com/javascript/auto-complete/demo.html
 
 ## Changelog
 
+### Version 1.0.3 - 2015/11/02
+
+* Fixed #2: Unspecified error on IE 10.
+
 ### Version 1.0.2 - 2015/08/15
 
 * Fixed: Hide suggestions on fast input.
