@@ -144,6 +144,7 @@ var autoComplete = (function(){
                 }
                 else
                     that.sc.style.display = 'none';
+                    that.removeAttribute('aria-activedescendant');
             }
 
             that.keydownHandler = function(e){
@@ -221,12 +222,13 @@ var autoComplete = (function(){
                 removeEvent(that, 'focus', that.focusHandler);
                 removeEvent(that, 'keydown', that.keydownHandler);
                 removeEvent(that, 'keyup', that.keyupHandler);
+                that.removeAttribute('aria-activedescendant');
                 if (that.autocompleteAttr)
                     that.setAttribute('autocomplete', that.autocompleteAttr);
                 else
                     that.removeAttribute('autocomplete');
-                document.body.removeChild(that.sc);
-                that = null;
+                    document.body.removeChild(that.sc);
+                    that = null;
             }
         };
     }
