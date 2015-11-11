@@ -40,13 +40,14 @@ var autoComplete = (function(){
                 search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
                 var option = document.createElement('option');
-                
+
+                option.id = Math.random().toString(36).substring(7);
                 option.className = "autocomplete-suggestion";
                 option.setAttribute('role', 'option');
                 option.setAttribute('data-val', item);
                 option.innerHTML = item.replace(re, "<b>$1</b>");
 
-                return option;
+                return option.outerHTML;
             },
             onSelect: function(e, term, item){}
         };
@@ -109,7 +110,6 @@ var autoComplete = (function(){
             live('autocomplete-suggestion', 'mouseover', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                 if (sel) sel.className = sel.className.replace('selected', '');
-                this.id = Math.random().toString(36).substring(7);
                 that.setAttribute('aria-activedescendant', this.id);
                 this.className += ' selected';
             }, that.sc);
@@ -153,7 +153,6 @@ var autoComplete = (function(){
                     var next, sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                     if (!sel) {
                         next = (key == 40) ? that.sc.querySelector('.autocomplete-suggestion') : that.sc.childNodes[that.sc.childNodes.length - 1]; // first : last
-                        next.id = Math.random().toString(36).substring(7);
                         next.className += ' selected';
                         that.value = next.getAttribute('data-val');
                         that.setAttribute('aria-activedescendant', next.id);
@@ -161,7 +160,6 @@ var autoComplete = (function(){
                         next = (key == 40) ? sel.nextSibling : sel.previousSibling;
                         if (next) {
                             sel.className = sel.className.replace('selected', '');
-                            next.id = Math.random().toString(36).substring(7);
                             next.className += ' selected';
                             that.value = next.getAttribute('data-val');
                             that.setAttribute('aria-activedescendant', next.id);
