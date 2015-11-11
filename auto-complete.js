@@ -39,7 +39,7 @@ var autoComplete = (function(){
                 // escape special characters
                 search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-                return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
+                return '<option class="autocomplete-suggestion" role="option" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</option>';
             },
             onSelect: function(e, term, item){}
         };
@@ -49,10 +49,14 @@ var autoComplete = (function(){
         var elems = typeof o.selector == 'object' ? [o.selector] : document.querySelectorAll(o.selector);
         for (var i=0; i<elems.length; i++) {
             var that = elems[i];
+            console.log(that);
 
             // create suggestions container "sc"
-            that.sc = document.createElement('div');
+            that.sc = document.createElement('datalist');
             that.sc.className = 'autocomplete-suggestions '+o.menuClass;
+            that.sc.setAttribute('role', 'listbox');
+            that.sc.setAttribute('aria-live', 'polite');
+            that.sc.setAttribute('aria-relevant', 'additions removals');
 
             that.autocompleteAttr = that.getAttribute('autocomplete');
             that.setAttribute('autocomplete', 'off');
