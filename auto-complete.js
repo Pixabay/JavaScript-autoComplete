@@ -49,10 +49,16 @@ var autoComplete = (function(){
         var elems = typeof o.selector == 'object' ? [o.selector] : document.querySelectorAll(o.selector);
         for (var i=0; i<elems.length; i++) {
             var that = elems[i];
-            console.log(that);
+            var autocompleteID = Math.random().toString(36).substring(7);
+
+            that.setAttribute('role', 'combobox');
+            that.setAttribute('aria-expanded', 'false');
+            that.setAttribute('aria-autocomplete', 'list');
+            that.setAttribute('aria-owns', autocompleteID);
 
             // create suggestions container "sc"
             that.sc = document.createElement('datalist');
+            that.sc.id = autocompleteID;
             that.sc.className = 'autocomplete-suggestions '+o.menuClass;
             that.sc.setAttribute('role', 'listbox');
             that.sc.setAttribute('aria-live', 'polite');
@@ -64,6 +70,8 @@ var autoComplete = (function(){
             that.last_val = '';
 
             that.updateSC = function(resize, next){
+                that.setAttribute('aria-expanded', 'true');
+
                 var rect = that.getBoundingClientRect();
                 that.sc.style.left = rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + 'px';
                 that.sc.style.top = rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + 1 + 'px';
@@ -88,12 +96,14 @@ var autoComplete = (function(){
 
             live('autocomplete-suggestion', 'mouseleave', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); }, 20);
+                if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); that.removeAttribute('aria-activedescendant');}, 20);
             }, that.sc);
 
             live('autocomplete-suggestion', 'mouseover', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                 if (sel) sel.className = sel.className.replace('selected', '');
+                this.id = Math.random().toString(36).substring(7);
+                that.setAttribute('aria-activedescendant', this.id);
                 this.className += ' selected';
             }, that.sc);
 
@@ -136,16 +146,20 @@ var autoComplete = (function(){
                     var next, sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                     if (!sel) {
                         next = (key == 40) ? that.sc.querySelector('.autocomplete-suggestion') : that.sc.childNodes[that.sc.childNodes.length - 1]; // first : last
+                        next.id = Math.random().toString(36).substring(7);
                         next.className += ' selected';
                         that.value = next.getAttribute('data-val');
+                        that.setAttribute('aria-activedescendant', next.id);
                     } else {
                         next = (key == 40) ? sel.nextSibling : sel.previousSibling;
                         if (next) {
                             sel.className = sel.className.replace('selected', '');
+                            next.id = Math.random().toString(36).substring(7);
                             next.className += ' selected';
                             that.value = next.getAttribute('data-val');
+                            that.setAttribute('aria-activedescendant', next.id);
                         }
-                        else { sel.className = sel.className.replace('selected', ''); that.value = that.last_val; next = 0; }
+                        else { sel.className = sel.className.replace('selected', ''); that.value = that.last_val; next = 0; that.removeAttribute('aria-activedescendant'); }
                     }
                     that.updateSC(0, next);
                     return false;
