@@ -39,10 +39,11 @@ var autoComplete = (function(){
                 // escape special characters
                 search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-                var option = document.createElement('option');
+                var option = document.createElement('div');
 
                 option.id = Math.random().toString(36).substring(7);
                 option.className = "autocomplete-suggestion";
+                option.setAttribute('role', 'option');
                 option.setAttribute('data-val', item);
                 option.innerHTML = item.replace(re, "<b>$1</b>");
 
@@ -64,7 +65,7 @@ var autoComplete = (function(){
             that.setAttribute('aria-owns', autocompleteID);
 
             // create suggestions container "sc"
-            that.sc = document.createElement('datalist');
+            that.sc = document.createElement('div');
             that.sc.id = autocompleteID;
             that.sc.className = 'autocomplete-suggestions '+o.menuClass;
             that.sc.setAttribute('role', 'listbox');
