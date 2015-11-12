@@ -226,8 +226,8 @@ var autoComplete = (function(){
                     that.setAttribute('autocomplete', that.autocompleteAttr);
                 else
                     that.removeAttribute('autocomplete');
-                    document.body.removeChild(that.sc);
-                    that = null;
+                document.body.removeChild(that.sc);
+                that = null;
             }
         };
     }
