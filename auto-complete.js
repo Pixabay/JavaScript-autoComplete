@@ -43,7 +43,6 @@ var autoComplete = (function(){
 
                 option.id = Math.random().toString(36).substring(7);
                 option.className = "autocomplete-suggestion";
-                option.setAttribute('role', 'option');
                 option.setAttribute('data-val', item);
                 option.innerHTML = item.replace(re, "<b>$1</b>");
 
