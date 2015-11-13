@@ -39,7 +39,15 @@ var autoComplete = (function(){
                 // escape special characters
                 search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-                return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
+                var option = document.createElement('div');
+
+                option.id = Math.random().toString(36).substring(7);
+                option.className = "autocomplete-suggestion";
+                option.setAttribute('role', 'option');
+                option.setAttribute('data-val', item);
+                option.innerHTML = item.replace(re, "<b>$1</b>");
+
+                return option.outerHTML;
             },
             onSelect: function(e, term, item){}
         };
@@ -49,10 +57,20 @@ var autoComplete = (function(){
         var elems = typeof o.selector == 'object' ? [o.selector] : document.querySelectorAll(o.selector);
         for (var i=0; i<elems.length; i++) {
             var that = elems[i];
+            var autocompleteID = Math.random().toString(36).substring(7);
+
+            that.setAttribute('role', 'combobox');
+            that.setAttribute('aria-expanded', 'false');
+            that.setAttribute('aria-autocomplete', 'list');
+            that.setAttribute('aria-owns', autocompleteID);
 
             // create suggestions container "sc"
             that.sc = document.createElement('div');
+            that.sc.id = autocompleteID;
             that.sc.className = 'autocomplete-suggestions '+o.menuClass;
+            that.sc.setAttribute('role', 'listbox');
+            that.sc.setAttribute('aria-live', 'polite');
+            that.sc.setAttribute('aria-relevant', 'additions removals');
 
             that.autocompleteAttr = that.getAttribute('autocomplete');
             that.setAttribute('autocomplete', 'off');
@@ -60,6 +78,8 @@ var autoComplete = (function(){
             that.last_val = '';
 
             that.updateSC = function(resize, next){
+                that.setAttribute('aria-expanded', 'true');
+
                 var rect = that.getBoundingClientRect();
                 that.sc.style.left = rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + 'px';
                 that.sc.style.top = rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + 1 + 'px';
@@ -84,12 +104,13 @@ var autoComplete = (function(){
 
             live('autocomplete-suggestion', 'mouseleave', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); }, 20);
+                if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); that.removeAttribute('aria-activedescendant');}, 20);
             }, that.sc);
 
             live('autocomplete-suggestion', 'mouseover', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                 if (sel) sel.className = sel.className.replace('selected', '');
+                that.setAttribute('aria-activedescendant', this.id);
                 this.className += ' selected';
             }, that.sc);
 
@@ -123,6 +144,7 @@ var autoComplete = (function(){
                 }
                 else
                     that.sc.style.display = 'none';
+                    that.removeAttribute('aria-activedescendant');
             }
 
             that.keydownHandler = function(e){
@@ -134,14 +156,16 @@ var autoComplete = (function(){
                         next = (key == 40) ? that.sc.querySelector('.autocomplete-suggestion') : that.sc.childNodes[that.sc.childNodes.length - 1]; // first : last
                         next.className += ' selected';
                         that.value = next.getAttribute('data-val');
+                        that.setAttribute('aria-activedescendant', next.id);
                     } else {
                         next = (key == 40) ? sel.nextSibling : sel.previousSibling;
                         if (next) {
                             sel.className = sel.className.replace('selected', '');
                             next.className += ' selected';
                             that.value = next.getAttribute('data-val');
+                            that.setAttribute('aria-activedescendant', next.id);
                         }
-                        else { sel.className = sel.className.replace('selected', ''); that.value = that.last_val; next = 0; }
+                        else { sel.className = sel.className.replace('selected', ''); that.value = that.last_val; next = 0; that.removeAttribute('aria-activedescendant'); }
                     }
                     that.updateSC(0, next);
                     return false;
@@ -198,6 +222,7 @@ var autoComplete = (function(){
                 removeEvent(that, 'focus', that.focusHandler);
                 removeEvent(that, 'keydown', that.keydownHandler);
                 removeEvent(that, 'keyup', that.keyupHandler);
+                that.removeAttribute('aria-activedescendant');
                 if (that.autocompleteAttr)
                     that.setAttribute('autocomplete', that.autocompleteAttr);
                 else

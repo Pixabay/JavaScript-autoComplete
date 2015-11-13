@@ -17,10 +17,15 @@ https://goodies.pixabay.com/javascript/auto-complete/demo.html
 
 * Lightweight: 5.4 kB of JavaScript - less than 2.4 kB gzipped
 * Fully flexible data source
+* Fully accessible
 * Smart caching, delay and minimum character settings
 * Callbacks
 
 ## Changelog
+
+### Version 1.0.4 - 2015/11/11
+
+* Added ARIA support
 
 ### Version 1.0.3 - 2015/11/02
 
