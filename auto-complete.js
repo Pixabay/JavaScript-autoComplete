@@ -7,6 +7,20 @@
 
 var autoComplete = (function(){
     // "use strict";
+
+    var POSITION_RELATIVE_VALUES = ['absolute', 'fixed', 'relative'];
+    function getPositionStyle(element){
+        return element ? window.getComputedStyle(element).position : null;
+    }
+
+    function getParentPositionDeterminant(element){
+        var parent = element.parentNode;
+        return (
+            POSITION_RELATIVE_VALUES.indexOf(getPositionStyle(parent)) > -1
+            && parent
+        ) || getParentPositionDeterminant(parent);
+    }
+
     function autoComplete(options){
         if (!document.querySelector) return;
 
@@ -53,6 +67,7 @@ var autoComplete = (function(){
             var that = elems[i];
 
             // create suggestions container "sc"
+            that.parentPositionDeterminant = getParentPositionDeterminant(that);
             that.sc = document.createElement('div');
             that.sc.className = 'autocomplete-suggestions '+o.menuClass;
 
@@ -63,9 +78,21 @@ var autoComplete = (function(){
 
             that.updateSC = function(resize, next){
                 var rect = that.getBoundingClientRect();
-                that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
-                that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
+
                 that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
+
+                var thatLeft = rect.left + (window.pageXOffset || document.documentElement.scrollLeft);
+                var thatBottom = rect.bottom + (window.pageYOffset || document.documentElement.scrollTop);
+                var parentTop = 0;
+                var parentLeft = 0;
+                if (that.parentPositionDeterminant) {
+                    var parentRect = that.parentPositionDeterminant.getBoundingClientRect();
+                    parentLeft = parentRect.left + (window.pageXOffset || document.documentElement.scrollLeft);
+                    parentTop = parentRect.top + (window.pageYOffset || document.documentElement.scrollTop);
+                }
+                that.sc.style.left = Math.round(thatLeft - parentLeft + o.offsetLeft) + 'px';
+                that.sc.style.top = Math.round(thatBottom - parentTop + o.offsetTop) + 'px';
+
                 if (!resize) {
                     that.sc.style.display = 'block';
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
@@ -81,8 +108,10 @@ var autoComplete = (function(){
                         }
                 }
             }
-            addEvent(window, 'resize', that.updateSC);
-            document.body.appendChild(that.sc);
+            if (!that.parentPositionDeterminant) {
+                addEvent(window, 'resize', that.updateSC);
+            }
+            that.parentElement.appendChild(that.sc);
 
             live('autocomplete-suggestion', 'mouseleave', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
@@ -204,7 +233,7 @@ var autoComplete = (function(){
                     that.setAttribute('autocomplete', that.autocompleteAttr);
                 else
                     that.removeAttribute('autocomplete');
-                document.body.removeChild(that.sc);
+                that.parentElement.removeChild(that.sc);
                 that = null;
             }
         };
