@@ -63,7 +63,6 @@ var autoComplete = (function(){
             that.updateSC = function(resize, next){
                 var rect = that.getBoundingClientRect();
                 that.sc.style.left = rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + 'px';
-                that.sc.style.top = rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + 1 + 'px';
                 that.sc.style.width = rect.right - rect.left + 'px'; // outerWidth
                 if (!resize) {
                     that.sc.style.display = 'block';
@@ -81,7 +80,7 @@ var autoComplete = (function(){
                 }
             }
             addEvent(window, 'resize', that.updateSC);
-            document.body.appendChild(that.sc);
+            that.parentElement.appendChild(that.sc);
 
             live('autocomplete-suggestion', 'mouseleave', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
@@ -203,7 +202,7 @@ var autoComplete = (function(){
                     that.setAttribute('autocomplete', that.autocompleteAttr);
                 else
                     that.removeAttribute('autocomplete');
-                document.body.removeChild(that.sc);
+                that.parentElement.removeChild(that.sc);
                 that = null;
             }
         };
