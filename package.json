@@ -1,0 +1,23 @@
+{
+  "name": "javascript-autocomplete",
+  "version": "1.0.0",
+  "description": "An extremely lightweight and powerful vanilla JavaScript completion suggester.",
+  "main": "auto-complete.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jusbrasil/JavaScript-autoComplete.git"
+  },
+  "keywords": [
+    "autocomplete",
+    "vanilla",
+    "javascript"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jusbrasil/JavaScript-autoComplete/issues"
+  },
+  "homepage": "https://github.com/jusbrasil/JavaScript-autoComplete#readme"
+}

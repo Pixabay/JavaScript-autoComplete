@@ -5,6 +5,9 @@
     License: http://www.opensource.org/licenses/mit-license.php
 */
 
+
+var requestId = 0;
+
 var autoComplete = (function(){
     // "use strict";
     function autoComplete(options){
@@ -62,7 +65,6 @@ var autoComplete = (function(){
             that.updateSC = function(resize, next){
                 var rect = that.getBoundingClientRect();
                 that.sc.style.left = rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + 'px';
-                that.sc.style.top = rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + 1 + 'px';
                 that.sc.style.width = rect.right - rect.left + 'px'; // outerWidth
                 if (!resize) {
                     that.sc.style.display = 'block';
@@ -80,7 +82,7 @@ var autoComplete = (function(){
                 }
             }
             addEvent(window, 'resize', that.updateSC);
-            document.body.appendChild(that.sc);
+            that.parentElement.appendChild(that.sc);
 
             live('autocomplete-suggestion', 'mouseleave', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
@@ -172,7 +174,17 @@ var autoComplete = (function(){
                                     if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
                                 }
                             }
-                            that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
+                            that.timer = setTimeout(function(){
+                              var thisRequestId = that._currentRequestId = requestId++;
+                              var suggestWrap = function(data) {
+                                // drop response of old requests
+                                if (thisRequestId !== that._currentRequestId) {
+                                  return;
+                                }
+                                return suggest(data);
+                              }
+                              o.source(val, suggestWrap);
+                            }, o.delay);
                         }
                     } else {
                         that.last_val = val;
@@ -202,7 +214,7 @@ var autoComplete = (function(){
                     that.setAttribute('autocomplete', that.autocompleteAttr);
                 else
                     that.removeAttribute('autocomplete');
-                document.body.removeChild(that.sc);
+                that.parentElement.removeChild(that.sc);
                 that = null;
             }
         };
