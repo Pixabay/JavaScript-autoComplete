@@ -5,6 +5,9 @@
     License: http://www.opensource.org/licenses/mit-license.php
 */
 
+
+var requestId = 0;
+
 var autoComplete = (function(){
     // "use strict";
     function autoComplete(options){
@@ -172,7 +175,17 @@ var autoComplete = (function(){
                                     if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
                                 }
                             }
-                            that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
+                            that.timer = setTimeout(function(){
+                              var thisRequestId = that._currentRequestId = requestId++;
+                              var suggestWrap = function(data) {
+                                // drop response of old requests
+                                if (thisRequestId !== that._currentRequestId) {
+                                  return;
+                                }
+                                return suggest(data);
+                              }
+                              o.source(val, suggestWrap);
+                            }, o.delay);
                         }
                     } else {
                         that.last_val = val;
