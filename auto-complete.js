@@ -35,6 +35,7 @@ var autoComplete = (function(){
             delay: 150,
             cache: 1,
             menuClass: '',
+            offsetX: 0,
             renderItem: function (item, search){
                 // escape special characters
                 search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -61,9 +62,9 @@ var autoComplete = (function(){
 
             that.updateSC = function(resize, next){
                 var rect = that.getBoundingClientRect();
-                that.sc.style.left = rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + 'px';
-                that.sc.style.top = rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + 1 + 'px';
-                that.sc.style.width = rect.right - rect.left + 'px'; // outerWidth
+                that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft)) + 'px';
+                that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetX) + 'px';
+                that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
                 if (!resize) {
                     that.sc.style.display = 'block';
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
