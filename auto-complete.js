@@ -35,6 +35,7 @@ var autoComplete = (function(){
             delay: 150,
             offsetLeft: 0,
             offsetTop: 1,
+            disableVerticalPositioning: false,
             cache: 1,
             menuClass: '',
             renderItem: function (item, search){
@@ -64,7 +65,9 @@ var autoComplete = (function(){
             that.updateSC = function(resize, next){
                 var rect = that.getBoundingClientRect();
                 that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
-                that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
+                if (!o.disableVerticalPositioning) {
+                    that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
+                }
                 that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
                 if (!resize) {
                     that.sc.style.display = 'block';
