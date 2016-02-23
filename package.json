@@ -1,0 +1,26 @@
+{
+  "name": "js-autocomplete",
+  "author": {
+    "name": "Simon Steinberger, Pixabay"
+  },
+  "bugs": {
+    "url": "https://github.com/Pixabay/JavaScript-autoComplete/issues"
+  },
+  "dependencies": {},
+  "description": "lightweight, vanilla javascript completion suggester",
+  "devDependencies": {},
+  "directories": {},
+  "homepage": "https://github.com/Pixabay/JavaScript-autoComplete#readme",
+  "keywords": [
+    "auto-complete",
+    "javascript",
+    "lightweight"
+  ],
+  "license": "MIT",
+  "main": "auto-complete.min.js",
+  "optionalDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.4"
+}
