@@ -37,6 +37,7 @@ var autoComplete = (function(){
             offsetTop: 1,
             cache: 1,
             menuClass: '',
+            container: 0,
             renderItem: function (item, search){
                 // escape special characters
                 search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -62,7 +63,13 @@ var autoComplete = (function(){
             that.last_val = '';
 
             that.updateSC = function(resize, next){
-                var rect = that.getBoundingClientRect();
+                var rect;
+                if (o.container !== 0) {
+                    var container = typeof o.container == 'object' ? [o.container] : document.getElementById(o.container);
+                    rect = container.getBoundingClientRect();
+                } else {
+                    rect = that.getBoundingClientRect();
+                }
                 that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
                 that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
                 that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
