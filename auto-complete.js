@@ -70,7 +70,9 @@ var autoComplete = (function(){
                 }
                 that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
                 if (!resize) {
-                    that.sc.style.display = 'block';
+                    if (!o.disableAutoDisplay) {
+                        that.sc.style.display = 'block';
+                    }
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
                     if (!that.sc.suggestionHeight) that.sc.suggestionHeight = that.sc.querySelector('.autocomplete-suggestion').offsetHeight;
                     if (that.sc.suggestionHeight)
