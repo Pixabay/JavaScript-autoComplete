@@ -101,7 +101,7 @@ var autoComplete = (function(){
                 this.className += ' selected';
             }, that.sc);
 
-            live('autocomplete-suggestion', 'mousedown', function(e){
+            live('autocomplete-suggestion', 'click', function(e){
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
                     var v = this.getAttribute('data-val');
                     that.value = v;
