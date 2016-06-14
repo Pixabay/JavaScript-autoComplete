@@ -116,11 +116,12 @@ var autoComplete = (function() {
             }, elem.suggestionsContainer);
 
             elem.blurHandler = function() {
-                var that = this;
+                var that = this,
+                    over_sb;
                 try {
-                    var over_sb = document.querySelector('.autocomplete-suggestions:hover');
+                    over_sb = document.querySelector('.autocomplete-suggestions:hover');
                 } catch (e) {
-                    var over_sb = 0;
+                    over_sb = 0;
                 }
                 if (!over_sb) {
                     this.last_val = this.value;
