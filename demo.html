@@ -239,6 +239,40 @@ new autoComplete({
             However, when choosing an item, the <span class="inline-code">onSelect()</span> callback returns all required information.
         </p>
 
+
+        <h4>Customizing the Display Container</h4>
+        <p>Sometimes you don't want the container to be just placed at the end of the body tag, and it would make more sense for your use case to have it display in a different location.
+        To do something like that, you would just have to scaffold out an empty block container (div, section, etc) for results, and then pass a class or ID attached to that container into
+        the options when you initalize autocomplete:</p>
+
+
+        <form onsubmit="return false;" class="pure-form" style="margin:30px 0 40px">
+            <input id="container-demo" autofocus type="text" name="q" placeholder="See the results ..." style="width:100%;max-width:600px;outline:0">
+        </form>
+
+        <div class="results-container"></div>
+        
+        <pre class="prettyprint"><code>var demo3 = new autoComplete({
+            selector: '#container-demo',
+            minChars: 1,
+            container: '.results-container',
+            source: function(term, suggest){
+                term = term.toLowerCase();
+                var choices = ['ActionScript', 'AppleScript', 'Asp', 'Assembly', 'BASIC', 'Batch', 'C', 'C++', 'CSS', 'Clojure', 'COBOL', 'ColdFusion', 'Erlang', 'Fortran', 'Groovy', 'Haskell', 'HTML', 'Java', 'JavaScript', 'Lisp', 'Perl', 'PHP', 'PowerShell', 'Python', 'Ruby', 'Scala', 'Scheme', 'SQL', 'TeX', 'XML'];
+                var suggestions = [];
+                for (i=0;i&lt;choices.length;i++)
+                    if (~choices[i].toLowerCase().indexOf(term)) suggestions.push(choices[i]);
+                suggest(suggestions);
+            }
+        });</code></pre>
+        
+        <pre class="prettyprint"><code>&lt;form onsubmit="return false;" class="pure-form" style="margin:30px 0 40px"&gt;
+            &lt;input id="container-demo" autofocus type="text" name="q" placeholder="See the results ..." style="width:100%;max-width:600px;outline:0"&gt;
+        &lt;/form&gt;
+
+        &lt;div class="results-container"&gt;&lt;/div&gt;</code></pre>
+
+
         <div style="margin:60px 0 40px;overflow:hidden;border-top:1px solid #eee;padding-top:40px">
             <span id="github_social"></span>
             <div style="float:left;margin-right:35px">
@@ -298,6 +332,20 @@ new autoComplete({
             onSelect: function(e, term, item){
                 console.log('Item "'+item.getAttribute('data-langname')+' ('+item.getAttribute('data-lang')+')" selected by '+(e.type == 'keydown' ? 'pressing enter' : 'mouse click')+'.');
                 document.getElementById('advanced-demo').value = item.getAttribute('data-langname')+' ('+item.getAttribute('data-lang')+')';
+            }
+        });
+
+        var demo3 = new autoComplete({
+            selector: '#container-demo',
+            minChars: 1,
+            container: '.results-container',
+            source: function(term, suggest){
+                term = term.toLowerCase();
+                var choices = ['ActionScript', 'AppleScript', 'Asp', 'Assembly', 'BASIC', 'Batch', 'C', 'C++', 'CSS', 'Clojure', 'COBOL', 'ColdFusion', 'Erlang', 'Fortran', 'Groovy', 'Haskell', 'HTML', 'Java', 'JavaScript', 'Lisp', 'Perl', 'PHP', 'PowerShell', 'Python', 'Ruby', 'Scala', 'Scheme', 'SQL', 'TeX', 'XML'];
+                var suggestions = [];
+                for (i=0;i<choices.length;i++)
+                    if (~choices[i].toLowerCase().indexOf(term)) suggestions.push(choices[i]);
+                suggest(suggestions);
             }
         });
 
