@@ -43,7 +43,10 @@ var autoComplete = (function(){
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
                 return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
             },
-            onSelect: function(e, term, item){}
+            onSelect: function(e, term, item){},
+            getBoundingClientRect: function(that){
+                return that.getBoundingClientRect();
+            }
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
@@ -62,7 +65,7 @@ var autoComplete = (function(){
             that.last_val = '';
 
             that.updateSC = function(resize, next){
-                var rect = that.getBoundingClientRect();
+                var rect = o.getBoundingClientRect();
                 that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
                 that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
                 that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
