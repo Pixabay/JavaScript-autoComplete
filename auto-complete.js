@@ -3,6 +3,7 @@
     Copyright (c) 2014 Simon Steinberger / Pixabay
     GitHub: https://github.com/Pixabay/JavaScript-autoComplete
     License: http://www.opensource.org/licenses/mit-license.php
+    Fixed by: https://github.com/ProtocolNebula
 */
 
 var autoComplete = (function(){
@@ -167,10 +168,12 @@ var autoComplete = (function(){
                             that.last_val = val;
                             clearTimeout(that.timer);
                             if (o.cache) {
-                                if (val in that.cache) { suggest(that.cache[val]); return; }
+                                // Fix by ProtocolNebula for bug with spaces
+                                var cleanVal = name.replace(/[^a-zA-Z0-9]/g, '-');
+                                if (cleanVal in that.cache) { suggest(that.cache[cleanVal]); return; }
                                 // no requests if previous suggestions were empty
-                                for (var i=1; i<val.length-o.minChars; i++) {
-                                    var part = val.slice(0, val.length-i);
+                                for (var i=1; i<cleanVal.length-o.minChars; i++) {
+                                    var part = cleanVal.slice(0, cleanVal.length-i);
                                     if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
                                 }
                             }
