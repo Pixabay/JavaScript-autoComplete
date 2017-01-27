@@ -169,7 +169,7 @@ var autoComplete = (function(){
                             clearTimeout(that.timer);
                             if (o.cache) {
                                 // Fix by ProtocolNebula for bug with spaces
-                                var cleanVal = name.replace(/[^a-zA-Z0-9]/g, '-');
+                                var cleanVal = val.replace(/[^a-zA-Z0-9]/g, '-');
                                 if (cleanVal in that.cache) { suggest(that.cache[cleanVal]); return; }
                                 // no requests if previous suggestions were empty
                                 for (var i=1; i<cleanVal.length-o.minChars; i++) {
