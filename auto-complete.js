@@ -117,7 +117,8 @@ var autoComplete = (function(){
 
             var suggest = function(data){
                 var val = that.value;
-                that.cache[val] = data;
+				var cleanVal = that.getClean(val);
+                that.cache[cleanVal] = data;
                 if (data.length && val.length >= o.minChars) {
                     var s = '';
                     for (var i=0;i<data.length;i++) s += o.renderItem(data[i], val);
@@ -164,19 +165,20 @@ var autoComplete = (function(){
                 if (!key || (key < 35 || key > 40) && key != 13 && key != 27) {
                     var val = that.value;
                     if (val.length >= o.minChars) {
+						if (o.cache) {
+							// Fix by ProtocolNebula for bug with spaces
+							var cleanVal = that.getClean(val);
+							if (cleanVal in that.cache) { suggest(that.cache[cleanVal]); return; }
+							// no requests if previous suggestions were empty
+							for (var i=1; i<cleanVal.length-o.minChars; i++) {
+								var part = cleanVal.slice(0, cleanVal.length-i);
+								if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
+							}
+						}
                         if (val != that.last_val) {
                             that.last_val = val;
                             clearTimeout(that.timer);
-                            if (o.cache) {
-                                // Fix by ProtocolNebula for bug with spaces
-                                var cleanVal = val.replace(/[^a-zA-Z0-9]/g, '-');
-                                if (cleanVal in that.cache) { suggest(that.cache[cleanVal]); return; }
-                                // no requests if previous suggestions were empty
-                                for (var i=1; i<cleanVal.length-o.minChars; i++) {
-                                    var part = cleanVal.slice(0, cleanVal.length-i);
-                                    if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
-                                }
-                            }
+                            
                             that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
                         }
                     } else {
@@ -187,11 +189,17 @@ var autoComplete = (function(){
             };
             addEvent(that, 'keyup', that.keyupHandler);
 
-            that.focusHandler = function(e){
-                that.last_val = '\n';
-                that.keyupHandler(e)
+            that.focusHandler = function(){
+                that.keyupHandler({keyCode:true, which: true});
             };
+            addEvent(that, 'focus', that.focusHandler);
+            
             if (!o.minChars) addEvent(that, 'focus', that.focusHandler);
+
+			// clean a value to use as key
+			that.getClean = function(val) {
+				return val.replace(/[^a-zA-Z0-9]/g, '-');
+			}
         }
 
         // public destroy method
