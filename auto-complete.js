@@ -126,6 +126,19 @@ var autoComplete = (function(){
                 else
                     that.sc.style.display = 'none';
             }
+            
+            // Optional method to trigger results programatically
+            that.triggerSC = function(data){
+
+              if (data.length) {
+                  var s = '';
+                  for (var i=0;i<data.length;i++) s += o.renderItem(data[i], '');
+                  that.sc.innerHTML = s;
+                  that.updateSC(0);
+              }
+              else
+                  that.sc.style.display = 'none';
+            };
 
             that.keydownHandler = function(e){
                 var key = window.event ? e.keyCode : e.which;
@@ -208,6 +221,8 @@ var autoComplete = (function(){
                 that = null;
             }
         };
+        
+        return elems;
     }
     return autoComplete;
 })();
