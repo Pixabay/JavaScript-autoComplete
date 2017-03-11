@@ -46,7 +46,8 @@ var autoComplete = (function(){
             onSelect: function(e, term, item){},
             renderNoResults: function() { return '<div class="noresults-suggestion">No results returned</div>'; },
             preventSource: function(val){ return false;},
-            sourcePrevented: function(val) {}
+            sourcePrevented: function(val) {},
+            widthScale: 1
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
@@ -68,7 +69,7 @@ var autoComplete = (function(){
                 var rect = that.getBoundingClientRect();
                 that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
                 that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
-                that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
+                that.sc.style.width = (o.widthScale * Math.round(rect.right - rect.left)) + 'px'; // outerWidth
                 if (!resize) {
                     that.sc.style.display = 'block';
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
