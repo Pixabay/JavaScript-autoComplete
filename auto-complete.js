@@ -43,7 +43,10 @@ var autoComplete = (function(){
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
                 return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
             },
-            onSelect: function(e, term, item){}
+            onSelect: function(e, term, item){},
+            renderNoResults: function() { return '<div class="noresults-suggestion">No results returned</div>'; },
+            preventSource: function(val){ return false;},
+            sourcePrevented: function(val) {}
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
@@ -123,8 +126,7 @@ var autoComplete = (function(){
                     that.sc.innerHTML = s;
                     that.updateSC(0);
                 }
-                else
-                    that.sc.style.display = 'none';
+                else that.sc.innerHTML = o.renderNoResults();
             }
 
             that.keydownHandler = function(e){
@@ -174,7 +176,10 @@ var autoComplete = (function(){
                                     if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
                                 }
                             }
-                            that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
+                            if (!o.preventSource(val)){
+                                that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
+                            } 
+                            else o.sourcePrevented(val);
                         }
                     } else {
                         that.last_val = val;

@@ -127,6 +127,15 @@ my_autoComplete.destroy();</code></pre>
 }</code></pre>
                 </td>
             </tr>
+            <tr>
+                <td>renderNoResult</td><td><i>function</i></td>
+                <td>
+                    <p>A function that gives you control over what is displayed when there are no results to suggest. Default:</p>
+<pre class="prettyprint" style="white-space:pre-wrap"><code>renderNoResults: function(){
+    return '&lt;div class=&quot;noresults-suggestion&quot;&gt;No results returned&lt;/div&gt;';
+}</code></pre>
+                </td>
+            </tr>
 
             <tr><td colspan="3">&nbsp;</td></tr>
             <tr><th>Callbacks</th><th colspan="2"></th></tr>
@@ -135,6 +144,14 @@ my_autoComplete.destroy();</code></pre>
                 <span class="inline-code">event</span> is the event that triggered the callback,
                 <span class="inline-code">term</span> is the selected value.
                 and <span class="inline-code">item</span> is the item rendered by the renderItem function.
+            </td></tr>
+            <tr><td>preventSource(val)</td><td colspan="2">
+                A callback function that fires before the source function would normally be called to evaluate conditions, and should return a truthy value.
+                <span class="inline-code">val</span> is the currently entered value.
+            </td></tr>
+            <tr><td>sourcePrevented(val)</td><td colspan="2">
+                A callback function that fires when the preventSource function returns true and the source function is prevented.
+                <span class="inline-code">val</span> is the value previously passed to preventSource.
             </td></tr>
 
             <tr><td colspan="3">&nbsp;</td></tr>
@@ -276,6 +293,12 @@ new autoComplete({
                 for (i=0;i<choices.length;i++)
                     if (~choices[i].toLowerCase().indexOf(term)) suggestions.push(choices[i]);
                 suggest(suggestions);
+            },
+            preventSource: function(val) {
+                return "python".substring(0, val.length) === val.toLowerCase();
+            },
+            sourcePrevented: function(val) {
+                if (val.toLowerCase() === 'python') alert('I don\'t make suggestions for snakes! (Maybe their AJAX requests take too long to return?)');
             }
         });
 
