@@ -110,7 +110,7 @@ my_autoComplete.destroy();</code></pre>
             <tr><td>delay</td><td>150</td><td>The delay in milliseconds between when a keystroke occurs and when a search is performed. A zero-delay is more responsive, but can produce a lot of load.</td></tr>
             <tr><td>offsetLeft</td><td><i>0</i></td><td>Optional left offset of the suggestions container.</td></tr>
             <tr><td>offsetTop</td><td><i>1</i></td><td>Optional top offset of the suggestions container.</td></tr>
-            <tr><td>cache</td><td><i>true</i></td><td>Determines if performed searches should be cached.</td></tr>
+            <tr><td>cache</td><td><i>1</i></td><td>Determines if performed searches should be cached. Falsy values turn caching off, 1 turns on (legacy) non-strict cache-checking, any other numeric values turn on strict cache-checking.</td></tr>
             <tr>
                 <td>menuClass</td><td><i>''</i></td>
                 <td>Custom class/es that get/s added to the dropdown menu container.
