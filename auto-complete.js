@@ -61,6 +61,7 @@ var autoComplete = (function(){
             that.setAttribute('autocomplete', 'off');
             that.cache = {};
             that.last_val = '';
+            that.selectedByMouse = false;
 
             that.updateSC = function(resize, next){
                 var rect = that.getBoundingClientRect();
@@ -92,13 +93,14 @@ var autoComplete = (function(){
 
             live('autocomplete-suggestion', 'mouseleave', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); }, 20);
+                if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); that.selectedByMouse = false; }, 20);
             }, that.sc);
 
             live('autocomplete-suggestion', 'mouseover', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                 if (sel) sel.className = sel.className.replace('selected', '');
                 this.className += ' selected';
+                that.selectedByMouse = true;
             }, that.sc);
 
             live('autocomplete-suggestion', 'click', function(e){
@@ -107,6 +109,7 @@ var autoComplete = (function(){
                     that.value = v;
                     o.onSelect(e, v, this);
                     that.sc.style.display = 'none';
+                    that.selectedByMouse = false;
                 }
             }, that.sc);
 
@@ -115,6 +118,7 @@ var autoComplete = (function(){
                 if (!over_sb) {
                     that.last_val = that.value;
                     that.sc.style.display = 'none';
+                    that.selectedByMouse = false;
                     setTimeout(function(){ that.sc.style.display = 'none'; }, 350); // hide suggestions on fast input
                 } else if (that !== document.activeElement) setTimeout(function(){ that.focus(); }, 20);
             };
@@ -152,20 +156,22 @@ var autoComplete = (function(){
                         else { sel.className = sel.className.replace('selected', ''); that.value = that.last_val; next = 0; }
                     }
                     that.updateSC(0, next);
+                    that.selectedByMouse = false;
                     return false;
                 }
                 // esc
-                else if (key == 27) { that.value = that.last_val; that.sc.style.display = 'none'; }
+                else if (key == 27) { that.value = that.last_val; that.sc.style.display = 'none'; that.selectedByMouse = false; }
                 // enter
                 else if (key == 13 || key == 9) {
                     var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                    if (sel && that.sc.style.display != 'none') { o.onSelect(e, sel.getAttribute('data-val'), sel); setTimeout(function(){ that.sc.style.display = 'none'; }, 20); }
+                    if (sel && that.sc.style.display != 'none' && !that.selectedByMouse) { o.onSelect(e, sel.getAttribute('data-val'), sel); setTimeout(function(){ that.sc.style.display = 'none'; }, 20); }
                 }
             };
             addEvent(that, 'keydown', that.keydownHandler);
 
             that.keyupHandler = function(e){
                 var key = window.event ? e.keyCode : e.which;
+                that.selectedByMouse = false;
                 if (!key || (key < 35 || key > 40) && key != 27) {
                     var val = that.value;
                     if (val.length >= o.minChars) {
