@@ -157,6 +157,13 @@ my_autoComplete.destroy();</code></pre>
                 A callback function that fires when the preventSource function returns true and the source function is prevented.
                 <span class="inline-code">val</span> is the value previously passed to preventSource.
             </td></tr>
+            <tr>
+                <td>valueFilter(val, lastVal)</td><td colspan="2">
+                A callback function that fires prior to onSelect, allowing exact specification of how the new value should be handled, to provide to onSelect.
+                <span class="inline-code">val</span> is the new value from the last selection.
+                <span class="inline-code">lastVal<span> is the value currently stored.
+                valueFilter should return the appropriate value to be stored.
+            </tr>
 
             <tr><td colspan="3">&nbsp;</td></tr>
             <tr><th>Public Methods</th><th colspan="2"></th></tr>

@@ -47,7 +47,8 @@ var autoComplete = (function(){
             renderNoResults: function() { return '<div class="noresults-suggestion">No results returned</div>'; },
             preventSource: function(val){ return false;},
             sourcePrevented: function(val) {},
-            widthScale: 1
+            widthScale: 1,
+            valueFilter: function(val, lastVal) { return val; }
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
@@ -101,7 +102,7 @@ var autoComplete = (function(){
 
             live('autocomplete-suggestion', 'mousedown', function(e){
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
-                    var v = this.getAttribute('data-val');
+                    var v = that.valueFilter(this.getAttribute('data-val'), that.value);
                     that.value = v;
                     o.onSelect(e, v, this);
                     that.sc.style.display = 'none';
@@ -138,15 +139,15 @@ var autoComplete = (function(){
                     if (!sel) {
                         next = (key == 40) ? that.sc.querySelector('.autocomplete-suggestion') : that.sc.childNodes[that.sc.childNodes.length - 1]; // first : last
                         next.className += ' selected';
-                        that.value = next.getAttribute('data-val');
+                        that.value = that.valueFilter(next.getAttribute('data-val'), that.value);
                     } else {
                         next = (key == 40) ? sel.nextSibling : sel.previousSibling;
                         if (next) {
                             sel.className = sel.className.replace('selected', '');
                             next.className += ' selected';
-                            that.value = next.getAttribute('data-val');
+                            that.value = that.valueFilter(next.getAttribute('data-val'), that.value);
                         }
-                        else { sel.className = sel.className.replace('selected', ''); that.value = that.last_val; next = 0; }
+                        else { sel.className = sel.className.replace('selected', ''); that.value = that.valueFilter(that.last_val, that.val); next = 0; }
                     }
                     that.updateSC(0, next);
                     return false;
