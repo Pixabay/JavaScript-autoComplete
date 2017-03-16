@@ -84,10 +84,10 @@ var autoComplete = (function(){
             addEvent(window, 'resize', that.updateSC);
             document.body.appendChild(that.sc);
 
-            addEvent(that.sc,"mouseleave",function(e){
+            addEvent(that.sc, "mouseleave", function(e){
               var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
               if (sel) setTimeout(function(){ sel.className = sel.className.replace(' selected', ''); }, 20);
-            })
+            });
 
             live('autocomplete-suggestion', 'mouseover', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
