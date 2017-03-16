@@ -43,7 +43,12 @@ var autoComplete = (function(){
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
                 return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
             },
-            onSelect: function(e, term, item){}
+            onSelect: function(e, term, item){},
+            renderNoResults: function() { return '<div class="noresults-suggestion">No results returned</div>'; },
+            preventSource: function(val){ return false;},
+            sourcePrevented: function(val) {},
+            widthScale: 1,
+            valueFilter: function(val, lastVal) { return val; }
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
@@ -65,7 +70,7 @@ var autoComplete = (function(){
                 var rect = that.getBoundingClientRect();
                 that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
                 that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
-                that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
+                that.sc.style.width = (o.widthScale * Math.round(rect.right - rect.left)) + 'px'; // outerWidth
                 if (!resize) {
                     that.sc.style.display = 'block';
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
@@ -84,7 +89,7 @@ var autoComplete = (function(){
             addEvent(window, 'resize', that.updateSC);
             document.body.appendChild(that.sc);
 
-            live('autocomplete-suggestion', 'mouseleave', function(e){
+            live('autocomplete-suggestion', 'mouseout', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                 if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); }, 20);
             }, that.sc);
@@ -97,7 +102,7 @@ var autoComplete = (function(){
 
             live('autocomplete-suggestion', 'mousedown', function(e){
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
-                    var v = this.getAttribute('data-val');
+                    var v = o.valueFilter(this.getAttribute('data-val'), that.value);
                     that.value = v;
                     o.onSelect(e, v, this);
                     that.sc.style.display = 'none';
@@ -123,8 +128,7 @@ var autoComplete = (function(){
                     that.sc.innerHTML = s;
                     that.updateSC(0);
                 }
-                else
-                    that.sc.style.display = 'none';
+                else that.sc.innerHTML = o.renderNoResults();
             }
 
             that.keydownHandler = function(e){
@@ -135,15 +139,15 @@ var autoComplete = (function(){
                     if (!sel) {
                         next = (key == 40) ? that.sc.querySelector('.autocomplete-suggestion') : that.sc.childNodes[that.sc.childNodes.length - 1]; // first : last
                         next.className += ' selected';
-                        that.value = next.getAttribute('data-val');
+                        that.value = o.valueFilter(next.getAttribute('data-val'), that.value);
                     } else {
                         next = (key == 40) ? sel.nextSibling : sel.previousSibling;
                         if (next) {
                             sel.className = sel.className.replace('selected', '');
                             next.className += ' selected';
-                            that.value = next.getAttribute('data-val');
+                            that.value = o.valueFilter(next.getAttribute('data-val'), that.value);
                         }
-                        else { sel.className = sel.className.replace('selected', ''); that.value = that.last_val; next = 0; }
+                        else { sel.className = sel.className.replace('selected', ''); that.value = o.valueFilter(that.last_val, that.val); next = 0; }
                     }
                     that.updateSC(0, next);
                     return false;
@@ -168,13 +172,19 @@ var autoComplete = (function(){
                             clearTimeout(that.timer);
                             if (o.cache) {
                                 if (val in that.cache) { suggest(that.cache[val]); return; }
-                                // no requests if previous suggestions were empty
-                                for (var i=1; i<val.length-o.minChars; i++) {
-                                    var part = val.slice(0, val.length-i);
-                                    if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
-                                }
+                                //other truthy numeric values of course invoke "strict" cache usage 
+                                else if (o.cache == 1) {
+                                    // no requests if previous suggestions were empty
+                                    for (var i=1; i<val.length-o.minChars; i++) {
+                                        var part = val.slice(0, val.length-i);
+                                        if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
+                                    }
+                                }                                
                             }
-                            that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
+                            if (!o.preventSource(val)){
+                                that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
+                            } 
+                            else o.sourcePrevented(val);
                         }
                     } else {
                         that.last_val = val;

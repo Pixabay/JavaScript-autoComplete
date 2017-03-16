@@ -22,6 +22,22 @@ https://goodies.pixabay.com/javascript/auto-complete/demo.html
 
 ## Changelog
 
+### Version 1.0.7 - 2017/03/15
+
+* Modified de-select handler to fire on mouseout, rather than mouseleave. Fixed improper valueFunction references.
+
+### Version 1.0.7 - 2017/03/10
+
+* Added valueFilter callback and documentation.
+
+### Version 1.0.6 - 2017/03/10
+
+* Made cache: 1 implement old non-strict key cache searching, all other truthy values implement only strict caching.
+
+### Version 1.0.5 - 2017/03/10
+
+* Added renderNoResults, preventSource, sourcePrevented, and widthScale options
+
 ### Version 1.0.4 - 2016/02/10
 
 * Included pull #6 and added offsetLeft/offsetTop as optional parameter for suggestions container.
