@@ -84,14 +84,14 @@ var autoComplete = (function(){
             addEvent(window, 'resize', that.updateSC);
             document.body.appendChild(that.sc);
 
-            live('autocomplete-suggestion', 'mouseleave', function(e){
-                var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); }, 20);
-            }, that.sc);
+            addEvent(that.sc, "mouseleave", function(e){
+              var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
+              if (sel) setTimeout(function(){ sel.className = sel.className.replace(' selected', ''); }, 20);
+            });
 
             live('autocomplete-suggestion', 'mouseover', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                if (sel) sel.className = sel.className.replace('selected', '');
+                if (sel) sel.className = sel.className.replace(' selected', '');
                 this.className += ' selected';
             }, that.sc);
 
@@ -139,11 +139,11 @@ var autoComplete = (function(){
                     } else {
                         next = (key == 40) ? sel.nextSibling : sel.previousSibling;
                         if (next) {
-                            sel.className = sel.className.replace('selected', '');
+                            sel.className = sel.className.replace(' selected', '');
                             next.className += ' selected';
                             that.value = next.getAttribute('data-val');
                         }
-                        else { sel.className = sel.className.replace('selected', ''); that.value = that.last_val; next = 0; }
+                        else { sel.className = sel.className.replace(' selected', ''); that.value = that.last_val; next = 0; }
                     }
                     that.updateSC(0, next);
                     return false;
