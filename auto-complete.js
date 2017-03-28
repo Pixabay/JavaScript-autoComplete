@@ -62,6 +62,7 @@ var autoComplete = (function(){
             that.cache = {};
             that.last_val = '';
             that.selectedByMouse = false;
+            that.locked = false;
 
             that.updateSC = function(resize, next){
                 var rect = that.getBoundingClientRect();
@@ -71,7 +72,7 @@ var autoComplete = (function(){
                 }
                 that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
                 if (!resize) {
-                    if (!o.disableAutoDisplay) {
+                    if (!o.disableAutoDisplay && !that.locked) {
                         that.sc.style.display = 'block';
                     }
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
@@ -111,6 +112,7 @@ var autoComplete = (function(){
                     that.sc.style.display = 'none';
                     that.selectedByMouse = false;
                 }
+                that.locked = true;
             }, that.sc);
 
             that.blurHandler = function(){
@@ -120,7 +122,8 @@ var autoComplete = (function(){
                     that.sc.style.display = 'none';
                     that.selectedByMouse = false;
                     setTimeout(function(){ that.sc.style.display = 'none'; }, 350); // hide suggestions on fast input
-                } else if (that !== document.activeElement) setTimeout(function(){ that.focus(); }, 20);
+                } else if (that !== document.activeElement) setTimeout(function(){ /*that.focus();*/ }, 20);
+                that.locked = false;
             };
             addEvent(that, 'blur', that.blurHandler);
 
@@ -164,7 +167,11 @@ var autoComplete = (function(){
                 // enter
                 else if (key == 13 || key == 9) {
                     var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                    if (sel && that.sc.style.display != 'none' && !that.selectedByMouse) { o.onSelect(e, sel.getAttribute('data-val'), sel); setTimeout(function(){ that.sc.style.display = 'none'; }, 20); }
+                    if (sel && that.sc.style.display != 'none' && !that.selectedByMouse) {
+                        o.onSelect(e, sel.getAttribute('data-val'), sel);
+                        that.locked = true;
+                        setTimeout(function(){ that.sc.style.display = 'none'; }, 20);
+                    }
                 }
             };
             addEvent(that, 'keydown', that.keydownHandler);
@@ -199,6 +206,7 @@ var autoComplete = (function(){
             that.focusHandler = function(e){
                 that.last_val = '\n';
                 that.keyupHandler(e)
+                that.locked = false;
             };
             if (!o.minChars) addEvent(that, 'focus', that.focusHandler);
         }
