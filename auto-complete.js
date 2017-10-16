@@ -62,6 +62,7 @@ var autoComplete = (function(){
             that.last_val = '';
 
             that.updateSC = function(resize, next){
+                if(that != document.activeElement) return;
                 var rect = that.getBoundingClientRect();
                 that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
                 that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
