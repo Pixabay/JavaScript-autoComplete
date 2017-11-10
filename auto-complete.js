@@ -191,12 +191,12 @@ var autoComplete = (function(){
             if (!o.minChars) addEvent(that, 'focus', that.focusHandler);
         }
 
-		this.hideAll = function() {
+	this.hideAll = function() {
             for (var i=0; i<elems.length; i++) {
                 var that = elems[i];
-				that.sc.style.display = 'none';
-			}
-		}
+		that.sc.style.display = 'none';
+	    }
+	}
 
         // public destroy method
         this.destroy = function(){
