@@ -8,6 +8,7 @@
 var autoComplete = (function(){
     // "use strict";
     function autoComplete(options){
+        var is_scrolling = false;
         if (!document.querySelector) return;
 
         // helpers
@@ -43,6 +44,8 @@ var autoComplete = (function(){
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
                 return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
             },
+            onShowSuggestions: function() {},
+            onHideSuggestions: function() {},
             onSelect: function(e, term, item){}
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
@@ -79,6 +82,7 @@ var autoComplete = (function(){
                             else if (selTop < 0)
                                 that.sc.scrollTop = selTop + scrTop;
                         }
+                    o.onShowSuggestions();
                 }
             }
             addEvent(window, 'resize', that.updateSC);
@@ -104,12 +108,29 @@ var autoComplete = (function(){
                 }
             }, that.sc);
 
+            live('autocomplete-suggestion', 'touchstart', function(e){
+                is_scrolling = false;
+            }, that.sc);
+
+			live('autocomplete-suggestion', 'touchmove', function(e){
+                is_scrolling = true;
+            }, that.sc);
+
+            live('autocomplete-suggestion', 'touchend', function(e){
+                if (!is_scrolling) {
+                    var v = this.getAttribute('data-val');
+                    that.value = v;
+                    o.onSelect(e, v, this);
+                    that.sc.style.display = 'none';
+                }
+            }, that.sc);
+
             that.blurHandler = function(){
                 try { var over_sb = document.querySelector('.autocomplete-suggestions:hover'); } catch(e){ var over_sb = 0; }
                 if (!over_sb) {
                     that.last_val = that.value;
                     that.sc.style.display = 'none';
-                    setTimeout(function(){ that.sc.style.display = 'none'; }, 350); // hide suggestions on fast input
+                    setTimeout(function(){ that.sc.style.display = 'none'; o.onHideSuggestions(); }, 350); // hide suggestions on fast input
                 } else if (that !== document.activeElement) setTimeout(function(){ that.focus(); }, 20);
             };
             addEvent(that, 'blur', that.blurHandler);
