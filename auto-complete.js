@@ -250,7 +250,7 @@ var autoComplete = (function(){
 
 (function(){
     if (typeof define === 'function' && define.amd)
-        define([], function () { return autoComplete; });
+        define('autoComplete', function () { return autoComplete; });
     else if (typeof module !== 'undefined' && module.exports)
         module.exports = autoComplete;
     else
