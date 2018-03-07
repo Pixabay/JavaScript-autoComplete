@@ -37,6 +37,8 @@ var autoComplete = (function(){
             offsetTop: 1,
             cache: 1,
             menuClass: '',
+	        invertScroll: false,
+	        parentElementId: 'body',
             renderItem: function (item, search){
                 // escape special characters
                 search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -52,9 +54,10 @@ var autoComplete = (function(){
         for (var i=0; i<elems.length; i++) {
             var that = elems[i];
 
-            // create suggestions container "sc"
-            that.sc = document.createElement('div');
-            that.sc.className = 'autocomplete-suggestions '+o.menuClass;
+	        // create container and suggestions div "sc"
+	        var container = document.getElementById(o.parentElementId);
+	        that.sc = document.createElement('div');
+	        that.sc.className = 'autocomplete-suggestions '+o.menuClass;
 
             that.autocompleteAttr = that.getAttribute('autocomplete');
             that.setAttribute('autocomplete', 'off');
@@ -71,7 +74,12 @@ var autoComplete = (function(){
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
                     if (!that.sc.suggestionHeight) that.sc.suggestionHeight = that.sc.querySelector('.autocomplete-suggestion').offsetHeight;
                     if (that.sc.suggestionHeight)
-                        if (!next) that.sc.scrollTop = 0;
+	                    if (!next && !o.invertScroll) that.sc.scrollTop = 0;
+	                    else if(o.invertScroll){
+		                    if(that.sc.scrollHeight > that.sc.maxHeight){
+			                    that.sc.scrollTop = that.sc.scrollHeight;
+		                    }
+	                    }
                         else {
                             var scrTop = that.sc.scrollTop, selTop = next.getBoundingClientRect().top - that.sc.getBoundingClientRect().top;
                             if (selTop + that.sc.suggestionHeight - that.sc.maxHeight > 0)
@@ -80,9 +88,10 @@ var autoComplete = (function(){
                                 that.sc.scrollTop = selTop + scrTop;
                         }
                 }
-            }
+            };
+
             addEvent(window, 'resize', that.updateSC);
-            document.body.appendChild(that.sc);
+	        container.appendChild(that.sc);
 
             live('autocomplete-suggestion', 'mouseleave', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');

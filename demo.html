@@ -111,7 +111,21 @@ my_autoComplete.destroy();</code></pre>
             <tr><td>offsetLeft</td><td><i>0</i></td><td>Optional left offset of the suggestions container.</td></tr>
             <tr><td>offsetTop</td><td><i>1</i></td><td>Optional top offset of the suggestions container.</td></tr>
             <tr><td>cache</td><td><i>true</i></td><td>Determines if performed searches should be cached.</td></tr>
-            <tr>
+			<tr>
+				<td>invertScroll</td><td><i>false</i></td>
+				<td>If true, ensures suggestions at the bottom of the list are scrolled into view first.
+					<br/>Why? If your input element is in the footer, you may need to display suggestions <em>above</em> the
+					input - with best suggestions at the bottom of the list instead of the top.<br/>
+					Note that the default css does not support inverted autocomplete (you need to define this yourself).
+				</td>
+			</tr>
+			<tr>
+				<td>parentElementId</td><td><i>'body'</i></td>
+				<td>Custom container div to append autocomplete suggestions.
+					<br>Example: <span class="inline-code">{ parentElementId: 'my-container' }</span>
+				</td>
+			</tr>
+			<tr>
                 <td>menuClass</td><td><i>''</i></td>
                 <td>Custom class/es that get/s added to the dropdown menu container.
                 <br>Example: <span class="inline-code">{ menuClass: 'class1 class2' }</span></td>
