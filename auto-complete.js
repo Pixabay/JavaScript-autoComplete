@@ -182,7 +182,7 @@ var autoComplete = (function(){
                     }
                 }
             };
-            addEvent(that, 'keyup', that.keyupHandler);
+            addEvent(that, 'input', that.keyupHandler);
 
             that.focusHandler = function(e){
                 that.last_val = '\n';
