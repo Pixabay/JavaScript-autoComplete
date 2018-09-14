@@ -84,8 +84,8 @@ var autoComplete = (function(){
             }
             addEvent(window, 'resize', that.updateSC);
 
-            if (o.selectorToInsert && o.selectorToInsert instanceof HTMLElement) {
-                o.selectorToInsert.appendChild(that.sc);
+            if (o.selectorToInsert !== 0) {
+                document.querySelector(o.selectorToInsert).appendChild(that.sc);
             } else {
                 document.body.appendChild(that.sc);
             }
@@ -211,8 +211,8 @@ var autoComplete = (function(){
                 else
                     that.removeAttribute('autocomplete');
                 try {
-                    if (o.selectorToInsert && o.selectorToInsert.querySelector(elems[i])) {
-                        o.selectorToInsert.removeChild(that.sc);
+                    if (o.selectorToInsert) {
+                        document.querySelector(o.selectorToInsert).removeChild(that.sc);
                     } else {
                         document.body.removeChild(that.sc);
                     }
