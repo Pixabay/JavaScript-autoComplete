@@ -108,11 +108,11 @@ var autoComplete = (function(){
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
                     var v = this.getAttribute('data-val');
                     that.value = v;
+                    that.locked = true;
                     o.onSelect(e, v, this);
                     that.sc.style.display = 'none';
                     that.selectedByMouse = false;
                 }
-                that.locked = true;
             }, that.sc);
 
             that.blurHandler = function(){
@@ -168,8 +168,8 @@ var autoComplete = (function(){
                 else if (key == 13 || key == 9) {
                     var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                     if (sel && that.sc.style.display != 'none' && !that.selectedByMouse) {
-                        o.onSelect(e, sel.getAttribute('data-val'), sel);
                         that.locked = true;
+                        o.onSelect(e, sel.getAttribute('data-val'), sel);
                         setTimeout(function(){ that.sc.style.display = 'none'; }, 20);
                     }
                 }
