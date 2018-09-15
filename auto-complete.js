@@ -211,7 +211,7 @@ var autoComplete = (function(){
                 else
                     that.removeAttribute('autocomplete');
                 try {
-                    if (o.selectorToInsert) {
+                    if (o.selectorToInsert && document.querySelector(o.selectorToInsert).contains(that.sc)) {
                         document.querySelector(o.selectorToInsert).removeChild(that.sc);
                     } else {
                         document.body.removeChild(that.sc);
