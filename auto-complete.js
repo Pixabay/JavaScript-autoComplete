@@ -84,7 +84,7 @@ var autoComplete = (function(){
             }
             addEvent(window, 'resize', that.updateSC);
 
-            if (o.selectorToInsert !== 0) {
+            if (typeof o.selectorToInsert === "string" && document.querySelector(o.selectorToInsert) instanceof HTMLElement) {
                 document.querySelector(o.selectorToInsert).appendChild(that.sc);
             } else {
                 document.body.appendChild(that.sc);
