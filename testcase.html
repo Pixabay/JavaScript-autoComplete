@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./auto-complete.css">
+</head>
+<body>
+    <div class="ac" id="ac">
+        <input type="text">
+    </div>
+
+    <script src="./auto-complete.js"></script>
+
+    <script>
+
+        
+
+        debugger;
+        var acBase = ['car', 'cat', 'camera'];
+
+        var ac = new autoComplete({
+            selector: '.ac input',
+            minChars: 2,
+            source: function(term, suggest){
+                term = term.toLowerCase();
+                var choices = acBase;
+                var matches = [];
+                for (i=0; i<choices.length; i++)
+                    if (~choices[i].toLowerCase().indexOf(term)) matches.push(choices[i]);
+                suggest(matches);
+            },
+            selectorToInsert: '.ac'
+        });
+    </script>
+</body>
+</html>
