@@ -217,7 +217,7 @@ var autoComplete = (function(){
                         document.body.removeChild(that.sc);
                     }
                 } catch (error) {
-                    console.log('Destroying error: can\'t fild target selector', error);
+                    console.log('Destroying error: can\'t find target selector', error);
                     throw error;
                 }
                 that = null;
