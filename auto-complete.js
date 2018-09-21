@@ -228,6 +228,13 @@ var autoComplete = (function(){
                 that = null;
             }
         };
+
+        this.unlock = function () {
+            for (var i=0; i<elems.length; i++) {
+                var that = elems[i];
+                that.locked = false;
+            }
+        };
     }
     return autoComplete;
 })();
