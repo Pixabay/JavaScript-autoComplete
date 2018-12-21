@@ -156,7 +156,7 @@ my_autoComplete.destroy();</code></pre>
         term = term.toLowerCase();
         var choices = ['ActionScript', 'AppleScript', 'Asp', ...];
         var matches = [];
-        for (i=0; i&lt;choices.length; i++)
+        for (var i=0; i&lt;choices.length; i++)
             if (~choices[i].toLowerCase().indexOf(term)) matches.push(choices[i]);
         suggest(matches);
     }
@@ -221,7 +221,7 @@ new autoComplete({
         term = term.toLowerCase();
         var choices = [['Australia', 'au'], ['Austria', 'at'], ['Brasil', 'br'], ...];
         var suggestions = [];
-        for (i=0;i&lt;choices.length;i++)
+        for (var i=0;i&lt;choices.length;i++)
             if (~(choices[i][0]+' '+choices[i][1]).toLowerCase().indexOf(term)) suggestions.push(choices[i]);
         suggest(suggestions);
     },
@@ -273,7 +273,7 @@ new autoComplete({
                 term = term.toLowerCase();
                 var choices = ['ActionScript', 'AppleScript', 'Asp', 'Assembly', 'BASIC', 'Batch', 'C', 'C++', 'CSS', 'Clojure', 'COBOL', 'ColdFusion', 'Erlang', 'Fortran', 'Groovy', 'Haskell', 'HTML', 'Java', 'JavaScript', 'Lisp', 'Perl', 'PHP', 'PowerShell', 'Python', 'Ruby', 'Scala', 'Scheme', 'SQL', 'TeX', 'XML'];
                 var suggestions = [];
-                for (i=0;i<choices.length;i++)
+                for (var i=0;i<choices.length;i++)
                     if (~choices[i].toLowerCase().indexOf(term)) suggestions.push(choices[i]);
                 suggest(suggestions);
             }
@@ -286,7 +286,7 @@ new autoComplete({
                 term = term.toLowerCase();
                 var choices = [['Australia', 'au'], ['Austria', 'at'], ['Brasil', 'br'], ['Bulgaria', 'bg'], ['Canada', 'ca'], ['China', 'cn'], ['Czech Republic', 'cz'], ['Denmark', 'dk'], ['Finland', 'fi'], ['France', 'fr'], ['Germany', 'de'], ['Hungary', 'hu'], ['India', 'in'], ['Italy', 'it'], ['Japan', 'ja'], ['Netherlands', 'nl'], ['Norway', 'no'], ['Portugal', 'pt'], ['Romania', 'ro'], ['Russia', 'ru'], ['Spain', 'es'], ['Swiss', 'ch'], ['Turkey', 'tr'], ['USA', 'us']];
                 var suggestions = [];
-                for (i=0;i<choices.length;i++)
+                for (var i=0;i<choices.length;i++)
                     if (~(choices[i][0]+' '+choices[i][1]).toLowerCase().indexOf(term)) suggestions.push(choices[i]);
                 suggest(suggestions);
             },
