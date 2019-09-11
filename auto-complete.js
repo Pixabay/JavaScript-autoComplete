@@ -203,6 +203,32 @@ var autoComplete = (function(){
             };
             addEvent(that, 'keyup', that.keyupHandler);
 
+            that.compositionendHandler = function(e){
+                that.selectedByMouse = false;
+                {
+                    var val = that.value;
+                    if (val.length >= o.minChars) {
+                        if (val != that.last_val) {
+                            that.last_val = val;
+                            clearTimeout(that.timer);
+                            if (o.cache) {
+                                if (val in that.cache) { suggest(that.cache[val]); return; }
+                                // no requests if previous suggestions were empty
+                                for (var i=1; i<val.length-o.minChars; i++) {
+                                    var part = val.slice(0, val.length-i);
+                                    if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
+                                }
+                            }
+                            that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
+                        }
+                    } else {
+                        that.last_val = val;
+                        that.sc.style.display = 'none';
+                    }
+                }
+            };
+            addEvent(that, 'compositionend', that.compositionendHandler);
+
             that.focusHandler = function(e){
                 that.last_val = '\n';
                 that.keyupHandler(e)
@@ -220,6 +246,7 @@ var autoComplete = (function(){
                 removeEvent(that, 'focus', that.focusHandler);
                 removeEvent(that, 'keydown', that.keydownHandler);
                 removeEvent(that, 'keyup', that.keyupHandler);
+                removeEvent(that, 'compositionend', that.compositionendHandler);
                 if (that.autocompleteAttr)
                     that.setAttribute('autocomplete', that.autocompleteAttr);
                 else
