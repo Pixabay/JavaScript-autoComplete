@@ -54,7 +54,7 @@ var autoComplete = (function(){
             offsetTop: 1,
             cache: 1,
             menuClass: '',
-            renderItem: function (item, search){
+            renderItem: function (item, search, suggestionIndex){
                 // escape special characters
                 search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
@@ -152,7 +152,7 @@ var autoComplete = (function(){
                 that.cache[val] = data;
                 if (data.length && val.length >= o.minChars) {
                     var s = '';
-                    for (var i=0;i<data.length;i++) s += o.renderItem(data[i], val);
+                    for (var i=0;i<data.length;i++) s += o.renderItem(data[i], val, i);
                     that.sc.innerHTML = s;
                     that.updateSC(0);
                 }
