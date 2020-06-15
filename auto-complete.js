@@ -5,8 +5,15 @@
     License: http://www.opensource.org/licenses/mit-license.php
 */
 
-const { remmoveSuggestionFromCache } = require('./utils/cache');
-const { removeQueryFromLocalStorage, addQueryToLocalStorage, getQueriesFromLocalStorage, removeDuplicatedQueries } = require('./utils/localStorage');
+var _localStorage = require('./utils/localStorage'),
+    removeQueryFromLocalStorage = _localStorage.removeQueryFromLocalStorage,
+    addQueryToLocalStorage = _localStorage.addQueryToLocalStorage,
+    getQueriesFromLocalStorage = _localStorage.getQueriesFromLocalStorage,
+    removeDuplicatedQueries = _localStorage.removeDuplicatedQueries;
+
+var _cache = require('./utils/cache'),
+    remmoveSuggestionFromCache = _cache.remmoveSuggestionFromCache;
+
 var requestId = 0;
 
 var autoComplete = (function () {
@@ -135,9 +142,9 @@ var autoComplete = (function () {
                     var v = this.getAttribute('data-val');
                     if (o.queryHistory) {
                         if (e.path[1].className === 'local-suggestion-remove-button') {
-                            const removeButton = document.querySelector('.local-suggestion-remove-button')
+                            var removeButton = document.querySelector('.local-suggestion-remove-button')
                             this.removeChild(removeButton);
-                            const text = this.textContent.trim();
+                            var text = this.textContent.trim();
                             this.remove();
                             remmoveSuggestionFromCache(that.cache, text);
                             removeQueryFromLocalStorage(o.queryHistory, v);
@@ -166,7 +173,7 @@ var autoComplete = (function () {
             var suggest = function (data) {
                 var val = that.value;
                 if (o.queryHistory) {
-                    let localQueries = getQueriesFromLocalStorage(o.queryHistory, val);
+                    var localQueries = getQueriesFromLocalStorage(o.queryHistory, val);
                     data = localQueries.concat(data);
                     data = removeDuplicatedQueries(data);
                 }

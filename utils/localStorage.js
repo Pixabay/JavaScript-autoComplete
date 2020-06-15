@@ -1,6 +1,6 @@
-const removeQueryFromLocalStorage = (storageName, term) => {
-    const queries = JSON.parse(window.localStorage.getItem(storageName));
-    const filtredQueries = queries.filter((query) => {
+function removeQueryFromLocalStorage(storageName, term) {
+    var queries = JSON.parse(window.localStorage.getItem(storageName));
+    var filtredQueries = queries.filter(function(query) {
         if (query === term) {
             return false;
         }
@@ -9,11 +9,11 @@ const removeQueryFromLocalStorage = (storageName, term) => {
     window.localStorage.setItem(storageName, JSON.stringify(filtredQueries));
 };
 
-const addQueryToLocalStorage = (storageName, query) => {
+function addQueryToLocalStorage(storageName, query) {
     if (window.localStorage.getItem(storageName) === null) {
         window.localStorage.setItem(storageName, JSON.stringify([query]));
     } else {
-        const queries = JSON.parse(window.localStorage.getItem(storageName));
+        var queries = JSON.parse(window.localStorage.getItem(storageName));
         if (!queries.includes(query)) {
             if (queries.length >= 5) {
                 queries.shift();
@@ -24,19 +24,19 @@ const addQueryToLocalStorage = (storageName, query) => {
     }
 };
 
-const getQueriesFromLocalStorage = (storageName, term) => {
+function getQueriesFromLocalStorage(storageName, term) {
     if (window.localStorage.getItem(storageName) !== null) {
-        const queries = JSON.parse(window.localStorage.getItem(storageName));
-        let mathcedQueries = queries.map((query) => {
-            const regex = new RegExp(`^${term}`);
-            const match = regex.exec(query);
+        var queries = JSON.parse(window.localStorage.getItem(storageName));
+        var mathcedQueries = queries.map(function (query) {
+            var regex = new RegExp(`^${term}`);
+            var match = regex.exec(query);
             if (match) {
                 return query.replace(match, `<b>${match}</b>`);
             }
             return null;
         });
-        mathcedQueries = mathcedQueries.filter((value) => value !== null);
-        return mathcedQueries.map((query) => {
+        mathcedQueries = mathcedQueries.filter(function(value){ value !== null});
+        return mathcedQueries.map(function (query) {
             return {
                 'id-perfil': null,
                 'id-topico': null,
@@ -50,11 +50,11 @@ const getQueriesFromLocalStorage = (storageName, term) => {
 };
 
 
-const removeDuplicatedQueries = (queries) => {
-    const titles = [];
-    const cleanQueries = [];
-    for (let query of queries) {
-        const text = query.titulo.replace(/<b>|<\/b>/g, '')
+function removeDuplicatedQueries(queries) {
+    var titles = [];
+    var cleanQueries = [];
+    for (var query of queries) {
+        var text = query.titulo.replace(/<b>|<\/b>/g, '')
         if (!titles.includes(text)) {
             titles.push(text);
             cleanQueries.push(query);
