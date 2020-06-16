@@ -142,7 +142,7 @@ var autoComplete = (function () {
                     var v = this.getAttribute('data-val');
                     if (o.queryHistory) {
                         if (e.path[1].className === 'local-suggestion-remove-button') {
-                            var removeButton = document.querySelector('.local-suggestion-remove-button')
+                            var removeButton = this.querySelector('.local-suggestion-remove-button')
                             this.removeChild(removeButton);
                             var text = this.textContent.trim();
                             this.remove();
