@@ -7,5 +7,5 @@ function removeSuggestionFromCache(cache, suggestion) {
 }
 
 module.exports = {
-    remmoveSuggestionFromCache,
+    removeSuggestionFromCache,
 }

@@ -12,7 +12,7 @@ var _localStorage = require('./utils/localStorage'),
     removeDuplicatedQueries = _localStorage.removeDuplicatedQueries;
 
 var _cache = require('./utils/cache'),
-    remmoveSuggestionFromCache = _cache.remmoveSuggestionFromCache;
+    removeSuggestionFromCache = _cache.removeSuggestionFromCache;
 
 var requestId = 0;
 
@@ -69,7 +69,7 @@ var autoComplete = (function () {
                 return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
             },
             onSelect: function (e, term, item) { },
-            queryHistory: null
+            queryHistoryStorageName: null
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
@@ -140,23 +140,21 @@ var autoComplete = (function () {
             live('autocomplete-suggestion', 'mousedown', function (e) {
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
                     var v = this.getAttribute('data-val');
-                    if (o.queryHistory) {
-                        if (e.path[1].className === 'local-suggestion-remove-button') {
-                            var removeButton = this.querySelector('.local-suggestion-remove-button')
-                            this.removeChild(removeButton);
-                            var text = this.textContent.trim();
-                            this.parentElement.removeChild(this);
-                            remmoveSuggestionFromCache(that.cache, text);
-                            removeQueryFromLocalStorage(o.queryHistory, v);
-                            return;
-                        } else {
-                            addQueryToLocalStorage(o.queryHistory, v);
+                    if (o.queryHistoryStorageName && e.target.parentElement.classList.contains('local-suggestion-remove-button')) {
+                        var removeButton = this.querySelector('.local-suggestion-remove-button')
+                        this.removeChild(removeButton);
+                        var text = this.textContent.trim();
+                        this.parentElement.removeChild(this);
+                        removeSuggestionFromCache(that.cache, text);
+                        removeQueryFromLocalStorage(o.queryHistoryStorageName, v);
+                    } else {
+                        if (o.queryHistoryStorageName) {
+                            addQueryToLocalStorage(o.queryHistoryStorageName, v);
                         }
-          
+                        that.value = v;
+                        o.onSelect(e, v, this);
+                        that.sc.style.display = 'none';
                     }
-                    that.value = v;
-                    o.onSelect(e, v, this);
-                    that.sc.style.display = 'none';
                 }
             }, that.sc);
 
@@ -172,8 +170,8 @@ var autoComplete = (function () {
 
             var suggest = function (data) {
                 var val = that.value;
-                if (o.queryHistory) {
-                    var localQueries = getQueriesFromLocalStorage(o.queryHistory, val);
+                if (o.queryHistoryStorageName) {
+                    var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, val);
                     data = localQueries.concat(data);
                     data = removeDuplicatedQueries(data);
                 }

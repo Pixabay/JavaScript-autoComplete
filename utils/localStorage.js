@@ -3,7 +3,7 @@ function removeQueryFromLocalStorage(storageName, term) {
     var filteredQueries = queries.filter(function(query) {
         return query !== term;
     });
-    window.localStorage.setItem(storageName, JSON.stringify(filtredQueries));
+    window.localStorage.setItem(storageName, JSON.stringify(filteredQueries));
 };
 
 function addQueryToLocalStorage(storageName, query) {
@@ -24,7 +24,7 @@ function addQueryToLocalStorage(storageName, query) {
 function getQueriesFromLocalStorage(storageName, term) {
     if (window.localStorage.getItem(storageName) !== null) {
         var queries = JSON.parse(window.localStorage.getItem(storageName));
-        var mathcedQueries = queries.map(function (query) {
+        var matchedQueries = queries.map(function (query) {
             var regex = new RegExp(`^${term}`);
             var match = regex.exec(query);
             if (match) {
@@ -33,7 +33,7 @@ function getQueriesFromLocalStorage(storageName, term) {
             return null;
         });
         matchedQueries = matchedQueries.filter(function (value) { return value !== null });
-        return mathcedQueries.map(function (query) {
+        return matchedQueries.map(function (query) {
             return {
                 'id-perfil': null,
                 'id-topico': null,
