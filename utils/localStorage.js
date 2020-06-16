@@ -37,9 +37,9 @@ function getQueriesFromLocalStorage(storageName, term) {
             return {
                 'id-perfil': null,
                 'id-topico': null,
-                'imagem': "",
-                'titulo': query,
-                'isQueryHistory': true
+                imagem: '',
+                titulo: query,
+                isQueryHistory: true
             };
         });
     }
