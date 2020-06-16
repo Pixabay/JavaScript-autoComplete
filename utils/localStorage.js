@@ -1,6 +1,6 @@
 function removeQueryFromLocalStorage(storageName, term) {
     var queries = JSON.parse(window.localStorage.getItem(storageName));
-    var filtredQueries = queries.filter(function(query) {
+    var filteredQueries = queries.filter(function(query) {
         return query !== term;
     });
     window.localStorage.setItem(storageName, JSON.stringify(filtredQueries));
