@@ -69,7 +69,7 @@ var autoComplete = (function () {
                 return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
             },
             onSelect: function (e, term, item) { },
-            queryHistory: false
+            queryHistory: null
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
