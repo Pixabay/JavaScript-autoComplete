@@ -32,7 +32,7 @@ function getQueriesFromLocalStorage(storageName, term) {
             }
             return null;
         });
-        mathcedQueries = mathcedQueries.filter(function(value){ value !== null});
+        matchedQueries = matchedQueries.filter(function (value) { return value !== null });
         return mathcedQueries.map(function (query) {
             return {
                 'id-perfil': null,
