@@ -4,7 +4,7 @@
   "description": "An extremely lightweight and powerful vanilla JavaScript completion suggester.",
   "main": "auto-complete.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,17 @@
   "bugs": {
     "url": "https://github.com/jusbrasil/JavaScript-autoComplete/issues"
   },
-  "homepage": "https://github.com/jusbrasil/JavaScript-autoComplete#readme"
+  "homepage": "https://github.com/jusbrasil/JavaScript-autoComplete#readme",
+  "devDependencies": {
+    "jest": "^26.0.1"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ],
+    "testRegex": "tests/.*",
+    "testPathIgnorePatterns": [
+      "<rootDir>[/\\\\](build|static|node_modules)[/\\\\]"
+    ]
+  }
 }
