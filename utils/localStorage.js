@@ -1,29 +1,43 @@
+var MAX_LOCAL_QUERIES = 5;
+
+function saveSuggestionQueries(storageName, queries) {
+    window.localStorage.setItem(storageName, JSON.stringify(queries));
+}
+
+function getSuggestionQueries(storageName) {
+    try {
+        return JSON.parse(window.localStorage.getItem(storageName));
+    } catch (ignored) {
+        return [];
+    }
+}
+
 function removeQueryFromLocalStorage(storageName, term) {
-    var queries = JSON.parse(window.localStorage.getItem(storageName));
-    var filteredQueries = queries.filter(function(query) {
+    var queries = getSuggestionQueries(storageName);
+    var filteredQueries = queries.filter(function (query) {
         return query !== term;
     });
-    window.localStorage.setItem(storageName, JSON.stringify(filteredQueries));
+    saveSuggestionQueries(storageName, filteredQueries);
 };
 
 function addQueryToLocalStorage(storageName, query) {
-    if (window.localStorage.getItem(storageName) === null) {
-        window.localStorage.setItem(storageName, JSON.stringify([query]));
+    var queries = getSuggestionQueries(storageName);
+    if (queries === null) {
+        saveSuggestionQueries(storageName, [query]);
     } else {
-        var queries = JSON.parse(window.localStorage.getItem(storageName));
         if (!queries.includes(query)) {
-            if (queries.length >= 5) {
+            if (queries.length >= MAX_LOCAL_QUERIES) {
                 queries.shift();
             }
             queries.push(query);
         }
-        window.localStorage.setItem(storageName, JSON.stringify(queries));
+        saveSuggestionQueries(storageName, queries);
     }
 };
 
 function getQueriesFromLocalStorage(storageName, term) {
-    if (window.localStorage.getItem(storageName) !== null) {
-        var queries = JSON.parse(window.localStorage.getItem(storageName));
+    var queries = getSuggestionQueries(storageName);
+    if (queries !== null) {
         var matchedQueries = queries.map(function (query) {
             var regex = new RegExp(`^${term}`);
             var match = regex.exec(query);
@@ -61,8 +75,11 @@ function removeDuplicatedQueries(queries) {
 };
 
 module.exports = {
+    getSuggestionQueries,
+    saveSuggestionQueries,
     removeQueryFromLocalStorage,
     addQueryToLocalStorage,
     getQueriesFromLocalStorage,
-    removeDuplicatedQueries
+    removeDuplicatedQueries,
+    MAX_LOCAL_QUERIES
 }
