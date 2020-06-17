@@ -140,8 +140,8 @@ var autoComplete = (function () {
             live('autocomplete-suggestion', 'mousedown', function (e) {
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
                     var v = this.getAttribute('data-val');
-                    if (o.queryHistoryStorageName && e.target.parentElement.classList.contains('local-suggestion-remove-button')) {
-                        var removeButton = this.querySelector('.local-suggestion-remove-button')
+                    if (o.queryHistoryStorageName && e.target.parentElement.classList.contains('autocomplete-suggestion--local-remove-button')) {
+                        var removeButton = this.querySelector('.autocomplete-suggestion--local-remove-button')
                         this.removeChild(removeButton);
                         var text = this.textContent.trim();
                         this.parentElement.removeChild(this);
