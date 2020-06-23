@@ -4,7 +4,7 @@
   "description": "An extremely lightweight and powerful vanilla JavaScript completion suggester.",
   "main": "auto-complete.js",
   "scripts": {
-    "test": "jest --coverage"
+    "test": "NODE_ENV=test jest --coverage"
   },
   "repository": {
     "type": "git",
