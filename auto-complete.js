@@ -144,7 +144,7 @@ var autoComplete = (function () {
                         var removeButton = this.querySelector('.autocomplete-suggestion--local-remove-button')
                         var text = this.textContent.trim();
                         this.parentElement.removeChild(this);
-                        removeSuggestionFromCache(that.cache, text);
+                        that.cache = removeSuggestionFromCache(that.cache, text);
                         removeQueryFromLocalStorage(o.queryHistoryStorageName, v);
                     } else {
                         if (o.queryHistoryStorageName) {

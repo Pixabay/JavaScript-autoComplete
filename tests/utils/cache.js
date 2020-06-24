@@ -4,21 +4,21 @@ var _cache = require('../../utils/cache'),
 describe('Cache functions', function () {
     it('should remove query from cache', function () {
         // GIVEN
-        var queries = [
-            [{ titulo: 'target' }, { titulo: 'any' }, { titulo: 'any' }],
-            [{ titulo: 'any' }, { titulo: 'any' }, { titulo: 'target' }],
-            [{ titulo: 'any' }, { titulo: 'target' }, { titulo: 'any' }]
-        ];
+        var queries = {
+            'pref1': [{ titulo: 'target' }, { titulo: 'any' }, { titulo: 'any' }],
+            'pref2': [{ titulo: 'any' }, { titulo: 'any' }, { titulo: 'target' }],
+            'pref3': [{ titulo: 'any' }, { titulo: 'target' }, { titulo: 'any' }]
+        };
         var term = 'target';
 
         // WHEN
-        removeSuggestionFromCache(queries, term);
+        var new_cache = removeSuggestionFromCache(queries, term);
 
         // THEN
-        expect(queries).toMatchObject([
-            [{ titulo: 'any' }, { titulo: 'any' }],
-            [{ titulo: 'any' }, { titulo: 'any' }],
-            [{ titulo: 'any' }, { titulo: 'any' }]
-        ])
+        expect(new_cache).toMatchObject({
+            'pref1': [{ titulo: 'any' }, { titulo: 'any' }],
+            'pref2': [{ titulo: 'any' }, { titulo: 'any' }],
+            'pref3': [{ titulo: 'any' }, { titulo: 'any' }]
+        })
     });
 })
