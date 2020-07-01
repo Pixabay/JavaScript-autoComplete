@@ -146,16 +146,14 @@
 
             live('autocomplete-suggestion', 'mousedown', function (e) {
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
-                    var v = this.getAttribute('data-val');
                     if (o.queryHistoryStorageName && e.target.parentElement.classList.contains('autocomplete-suggestion--local-remove-button')) {
-                        var removeButton = this.querySelector('.autocomplete-suggestion--local-remove-button')
                         var text = this.textContent.trim();
                         this.parentElement.removeChild(this);
                         that.cache = removeSuggestionFromCache(that.cache, text);
-                        removeQueryFromLocalStorage(o.queryHistoryStorageName, v);
+                        removeQueryFromLocalStorage(o.queryHistoryStorageName, this.outerHTML);
                     } else {
                         if (o.queryHistoryStorageName) {
-                            addQueryToLocalStorage(o.queryHistoryStorageName, v);
+                            addQueryToLocalStorage(o.queryHistoryStorageName, this.outerHTML);
                         }
                         that.value = v;
                         o.onSelect(e, v, this);
@@ -176,14 +174,14 @@
 
             var suggest = function (data) {
                 var val = that.value;
-                if (o.queryHistoryStorageName) {
-                    var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, val);
-                    data = localQueries.concat(data);
-                    data = removeDuplicatedQueries(data);
-                }
                 that.cache[val] = data;
                 if (data.length && val.length >= o.minChars) {
                     var s = '';
+                    if (o.queryHistoryStorageName) {
+                        var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, val);
+                        console.log(localQueries[0])
+                        for (var i = 0; i < localQueries.length; i++) s += localQueries[i];
+                    }
                     for (var i = 0; i < data.length; i++) s += o.renderItem(data[i], val, i);
                     that.sc.innerHTML = s;
                     that.updateSC(0);

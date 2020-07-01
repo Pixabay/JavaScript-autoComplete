@@ -36,26 +36,21 @@ function addQueryToLocalStorage(storageName, query) {
 }
 
 function getQueriesFromLocalStorage(storageName, term) {
-    var queries = getSuggestionQueries(storageName);
-    if (queries !== null) {
-        var matchedQueries = queries.map(function (query) {
+    var localQueries = getSuggestionQueries(storageName);
+
+    if (localQueries !== null) {
+        var matchedQueries = localQueries.map(function (query) {
+            query.replace(/<b>|<\/b>/g, '');
+            var suggestion = new DOMParser().parseFromString( query,"text/html").body.firstElementChild.textContent.trim()
             var regex = new RegExp(`^${term}`);
-            var match = regex.exec(query);
+            var match = regex.exec(suggestion);
             if (match) {
                 return query.replace(match, `<b>${match}</b>`);
             }
             return null;
         });
         matchedQueries = matchedQueries.filter(function (value) { return value !== null });
-        return matchedQueries.map(function (query) {
-            return {
-                'id-perfil': null,
-                'id-topico': null,
-                imagem: '',
-                titulo: query,
-                isQueryHistory: true
-            };
-        });
+        return matchedQueries;
     }
     return [];
 }
@@ -65,7 +60,9 @@ function removeDuplicatedQueries(queries) {
     var titles = [];
     var cleanQueries = [];
     for (var query of queries) {
-        var text = query.titulo.replace(/<b>|<\/b>/g, '')
+        var text = {...query}
+        delete text.isQueryHistory
+        var text = JSON.stringify(text).replace(/<b>|<\/b>/g, '')
         if (!titles.includes(text)) {
             titles.push(text);
             cleanQueries.push(query);
