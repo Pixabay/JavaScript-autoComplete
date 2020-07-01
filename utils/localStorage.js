@@ -18,7 +18,7 @@ function removeQueryFromLocalStorage(storageName, term) {
         return query !== term;
     });
     saveSuggestionQueries(storageName, filteredQueries);
-};
+}
 
 function addQueryToLocalStorage(storageName, query) {
     var queries = getSuggestionQueries(storageName);
@@ -33,7 +33,7 @@ function addQueryToLocalStorage(storageName, query) {
         }
         saveSuggestionQueries(storageName, queries);
     }
-};
+}
 
 function getQueriesFromLocalStorage(storageName, term) {
     var queries = getSuggestionQueries(storageName);
@@ -58,7 +58,7 @@ function getQueriesFromLocalStorage(storageName, term) {
         });
     }
     return [];
-};
+}
 
 
 function removeDuplicatedQueries(queries) {
@@ -72,14 +72,22 @@ function removeDuplicatedQueries(queries) {
         }
     }
     return cleanQueries;
-};
-
-module.exports = {
-    getSuggestionQueries,
-    saveSuggestionQueries,
-    removeQueryFromLocalStorage,
-    addQueryToLocalStorage,
-    getQueriesFromLocalStorage,
-    removeDuplicatedQueries,
-    MAX_LOCAL_QUERIES
 }
+
+(function (root, factory) {
+    if (typeof module === 'object' && module.exports) {
+        module.exports = factory();
+    } else {
+        root['autoComplete/utils/localStorage'] = factory();
+    }
+}(typeof self !== 'undefined' ? self : this, function () {
+    return {
+        getSuggestionQueries,
+        saveSuggestionQueries,
+        removeQueryFromLocalStorage,
+        addQueryToLocalStorage,
+        getQueriesFromLocalStorage,
+        removeDuplicatedQueries,
+        MAX_LOCAL_QUERIES
+    };
+}));

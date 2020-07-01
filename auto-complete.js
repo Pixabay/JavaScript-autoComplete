@@ -5,19 +5,26 @@
     License: http://www.opensource.org/licenses/mit-license.php
 */
 
-var _localStorage = require('./utils/localStorage'),
-    removeQueryFromLocalStorage = _localStorage.removeQueryFromLocalStorage,
-    addQueryToLocalStorage = _localStorage.addQueryToLocalStorage,
-    getQueriesFromLocalStorage = _localStorage.getQueriesFromLocalStorage,
-    removeDuplicatedQueries = _localStorage.removeDuplicatedQueries;
-
-var _cache = require('./utils/cache'),
-    removeSuggestionFromCache = _cache.removeSuggestionFromCache;
-
-var requestId = 0;
-
-var autoComplete = (function () {
+(function (root, factory) {
+    if (typeof module === 'object' && module.exports) {
+        module.exports = factory(require('./utils/localStorage'), require('./utils/cache'));
+    } else {
+        root.autoComplete = factory(
+          root['autoComplete/utils/localStorage'],
+          root['autoComplete/utils/cache'])
+        ;
+    }
+}(typeof self !== 'undefined' ? self : this, function (_localStorage, _cache) {
     // "use strict";
+
+    var removeQueryFromLocalStorage = _localStorage.removeQueryFromLocalStorage,
+      addQueryToLocalStorage = _localStorage.addQueryToLocalStorage,
+      getQueriesFromLocalStorage = _localStorage.getQueriesFromLocalStorage,
+      removeDuplicatedQueries = _localStorage.removeDuplicatedQueries;
+
+    var removeSuggestionFromCache = _cache.removeSuggestionFromCache;
+
+    var requestId = 0;
 
     var POSITION_RELATIVE_VALUES = ['absolute', 'fixed', 'relative'];
     function getPositionStyle(element) {
@@ -279,13 +286,4 @@ var autoComplete = (function () {
         };
     }
     return autoComplete;
-})();
-
-(function () {
-    if (typeof define === 'function' && define.amd)
-        define('autoComplete', function () { return autoComplete; });
-    else if (typeof module !== 'undefined' && module.exports)
-        module.exports = autoComplete;
-    else
-        window.autoComplete = autoComplete;
-})();
+}));
