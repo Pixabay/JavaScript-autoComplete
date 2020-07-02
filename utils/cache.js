@@ -2,7 +2,7 @@ function removeSuggestionFromCache(cache, suggestion) {
     var clean_cache = {};
     for (key in cache) {
         clean_cache[key] = cache[key].filter(function (element) {
-            return element.replace(/<b>|<\/b>/g, '') !== suggestion;
+            return JSON.stringify(element).replace(/<b>|<\/b>/g, '') !== JSON.stringify(suggestion).replace(/<b>|<\/b>/g, '');
         })
     }
     return clean_cache;

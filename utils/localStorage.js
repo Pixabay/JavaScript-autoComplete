@@ -1,7 +1,8 @@
 var MAX_LOCAL_QUERIES = 5;
 
 function saveSuggestionQueries(storageName, queries) {
-    window.localStorage.setItem(storageName, JSON.stringify(queries));
+    queries = JSON.stringify(queries).replace(/<b>|<\/b>/g, '');
+    window.localStorage.setItem(storageName, queries);
 }
 
 function getSuggestionQueries(storageName) {
@@ -13,39 +14,43 @@ function getSuggestionQueries(storageName) {
 }
 
 function removeQueryFromLocalStorage(storageName, term) {
+    delete term.isQueryHistory;
     var queries = getSuggestionQueries(storageName);
     var filteredQueries = queries.filter(function (query) {
-        return query !== term;
+        return JSON.stringify(query) !== JSON.stringify(term).replace(/<b>|<\/b>/g, '');
     });
     saveSuggestionQueries(storageName, filteredQueries);
 }
 
 function addQueryToLocalStorage(storageName, query) {
+    delete query.isQueryHistory;
     var queries = getSuggestionQueries(storageName);
     if (queries === null) {
         saveSuggestionQueries(storageName, [query]);
     } else {
-        if (!queries.includes(query)) {
-            if (queries.length >= MAX_LOCAL_QUERIES) {
-                queries.shift();
-            }
-            queries.push(query);
+        queries = queries.filter(function(element){
+            return JSON.stringify(element) !== JSON.stringify(query).replace(/<b>|<\/b>/g, '');
+        })
+        if(queries.length >= MAX_LOCAL_QUERIES){
+            queries.shift();
         }
+        queries.push(query);
         saveSuggestionQueries(storageName, queries);
     }
 }
 
 function getQueriesFromLocalStorage(storageName, term) {
-    var localQueries = getSuggestionQueries(storageName);
-
-    if (localQueries !== null) {
-        var matchedQueries = localQueries.map(function (query) {
-            query.replace(/<b>|<\/b>/g, '');
-            var suggestion = new DOMParser().parseFromString( query,"text/html").body.firstElementChild.textContent.trim()
-            var regex = new RegExp(`^${term}`);
-            var match = regex.exec(suggestion);
+    var queries = getSuggestionQueries(storageName);
+    if (queries !== null) {
+        var matchedQueries = queries.map(function (query) {
+            query = JSON.stringify(query);
+            var regex = new RegExp(`${term}`);
+            var match = regex.exec(query);
             if (match) {
-                return query.replace(match, `<b>${match}</b>`);
+                query = query.replace(match, `<b>${match}</b>`);
+                query = JSON.parse(query);
+                query.isQueryHistory = true;
+                return query;
             }
             return null;
         });
@@ -60,11 +65,12 @@ function removeDuplicatedQueries(queries) {
     var titles = [];
     var cleanQueries = [];
     for (var query of queries) {
-        var text = {...query}
-        delete text.isQueryHistory
-        var text = JSON.stringify(text).replace(/<b>|<\/b>/g, '')
+        var isLocal = query.isQueryHistory;
+        delete query.isQueryHistory;
+        var text = JSON.stringify(query).replace(/<b>|<\/b>/g, '')
         if (!titles.includes(text)) {
             titles.push(text);
+            query.isQueryHistory = isLocal;
             cleanQueries.push(query);
         }
     }

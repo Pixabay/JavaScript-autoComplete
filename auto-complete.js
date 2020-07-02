@@ -84,6 +84,7 @@
         var elems = typeof o.selector == 'object' ? [o.selector] : document.querySelectorAll(o.selector);
         for (var i = 0; i < elems.length; i++) {
             var that = elems[i];
+            var rawData;
 
             // create suggestions container "sc"
             that.parentPositionDeterminant = getParentPositionDeterminant(that);
@@ -146,14 +147,15 @@
 
             live('autocomplete-suggestion', 'mousedown', function (e) {
                 if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
+                    var v = this.getAttribute('data-val');
+                    var index = this.getAttribute('data-index');
                     if (o.queryHistoryStorageName && e.target.parentElement.classList.contains('autocomplete-suggestion--local-remove-button')) {
-                        var text = this.textContent.trim();
                         this.parentElement.removeChild(this);
-                        that.cache = removeSuggestionFromCache(that.cache, text);
-                        removeQueryFromLocalStorage(o.queryHistoryStorageName, this.outerHTML);
+                        that.cache = removeSuggestionFromCache(that.cache, rawData[index]);
+                        removeQueryFromLocalStorage(o.queryHistoryStorageName, rawData[index]);
                     } else {
                         if (o.queryHistoryStorageName) {
-                            addQueryToLocalStorage(o.queryHistoryStorageName, this.outerHTML);
+                            addQueryToLocalStorage(o.queryHistoryStorageName, rawData[index]);
                         }
                         that.value = v;
                         o.onSelect(e, v, this);
@@ -174,6 +176,12 @@
 
             var suggest = function (data) {
                 var val = that.value;
+                if (o.queryHistoryStorageName) {
+                    var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, val);
+                    data = localQueries.concat(data);
+                    data = removeDuplicatedQueries(data);
+                }
+                rawData = data;
                 that.cache[val] = data;
                 if (data.length && val.length >= o.minChars) {
                     var s = '';
