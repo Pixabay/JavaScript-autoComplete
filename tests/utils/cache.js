@@ -9,7 +9,7 @@ describe('Cache functions', function () {
             'pref2': [{ titulo: 'any' }, { titulo: 'any' }, { titulo: 'target' }],
             'pref3': [{ titulo: 'any' }, { titulo: 'target' }, { titulo: 'any' }]
         };
-        var term = 'target';
+        var term = {titulo:'target'};
 
         // WHEN
         var new_cache = removeSuggestionFromCache(queries, term);

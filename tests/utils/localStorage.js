@@ -77,29 +77,14 @@ describe('Local storage functions', function () {
 
     it('should returned formated queries', function () {
         // GIVEN
-        addQueryToLocalStorage(testStorageName, 'first');
-        addQueryToLocalStorage(testStorageName, 'second');
+        addQueryToLocalStorage(testStorageName, { target: 'first' });
+        addQueryToLocalStorage(testStorageName, { target: 'second' });
 
         // WHEN
-        var queries = getQueriesFromLocalStorage(testStorageName, '');
+        var queries = getQueriesFromLocalStorage(testStorageName, 'firs');
 
         // THEN
-        expect(queries).toMatchObject([
-            {
-                'id-perfil': null,
-                'id-topico': null,
-                imagem: '',
-                titulo: '<b></b>first',
-                isQueryHistory: true
-            },
-            {
-                'id-perfil': null,
-                'id-topico': null,
-                imagem: '',
-                titulo: '<b></b>second',
-                isQueryHistory: true
-            }
-        ]);
+        expect(queries).toMatchObject([{target:'<b>firs</b>t', isQueryHistory:true}])
     });
 
     it('should return matched queries with bold propety in matched characters', function () {
@@ -110,15 +95,8 @@ describe('Local storage functions', function () {
         var queries = getQueriesFromLocalStorage(testStorageName, 'test');
 
         // THEN
-        expect(queries).toMatchObject([
-            {
-                'id-perfil': null,
-                'id-topico': null,
-                imagem: '',
-                titulo: '<b>test</b>ing',
-                isQueryHistory: true
-            }
-        ]);
+        console.log(queries)
+        expect(queries).toMatchObject(['<b>test</b>ing']);
     });
 
     it('should remove queries with same title', function () {
