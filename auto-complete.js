@@ -10,17 +10,17 @@
         module.exports = factory(require('./utils/localStorage'), require('./utils/cache'));
     } else {
         root.autoComplete = factory(
-          root['autoComplete/utils/localStorage'],
-          root['autoComplete/utils/cache'])
-        ;
+            root['autoComplete/utils/localStorage'],
+            root['autoComplete/utils/cache'])
+            ;
     }
 }(typeof self !== 'undefined' ? self : this, function (_localStorage, _cache) {
     // "use strict";
 
     var removeQueryFromLocalStorage = _localStorage.removeQueryFromLocalStorage,
-      addQueryToLocalStorage = _localStorage.addQueryToLocalStorage,
-      getQueriesFromLocalStorage = _localStorage.getQueriesFromLocalStorage,
-      removeDuplicatedQueries = _localStorage.removeDuplicatedQueries;
+        addQueryToLocalStorage = _localStorage.addQueryToLocalStorage,
+        getQueriesFromLocalStorage = _localStorage.getQueriesFromLocalStorage,
+        removeDuplicatedQueries = _localStorage.removeDuplicatedQueries;
 
     var removeSuggestionFromCache = _cache.removeSuggestionFromCache;
 
@@ -145,23 +145,24 @@
                 this.className += ' selected';
             }, that.sc);
 
-            live('autocomplete-suggestion', 'mousedown', function (e) {
-                if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
-                    var v = this.getAttribute('data-val');
-                    var index = this.getAttribute('data-index');
-                    if (o.queryHistoryStorageName && e.target.parentElement.classList.contains('autocomplete-suggestion--local-remove-button')) {
-                        this.parentElement.removeChild(this);
-                        that.cache = removeSuggestionFromCache(that.cache, rawData[index]);
-                        removeQueryFromLocalStorage(o.queryHistoryStorageName, rawData[index]);
-                    } else {
-                        if (o.queryHistoryStorageName) {
-                            addQueryToLocalStorage(o.queryHistoryStorageName, rawData[index]);
-                        }
-                        that.value = v;
-                        o.onSelect(e, v, this);
-                        that.sc.style.display = 'none';
+            live('autocomplete-suggestion-text', 'mousedown', function (e) {
+                if (hasClass(this, 'autocomplete-suggestion-text')) { // else outside click
+                    var v = this.parentElement.getAttribute('data-val');
+                    var index = this.parentElement.getAttribute('data-index');
+                    if (o.queryHistoryStorageName) {
+                        addQueryToLocalStorage(o.queryHistoryStorageName, rawData[index]);
                     }
+                    that.value = v;
+                    o.onSelect(e, v, this);
+                    that.sc.style.display = 'none';
                 }
+            }, that.sc);
+
+            live('autocomplete-suggestion--local-remove-button', 'mousedown', function (e) {
+                var index = this.parentElement.getAttribute('data-index');
+                this.parentElement.remove()
+                that.cache = removeSuggestionFromCache(that.cache, rawData[index]);
+                removeQueryFromLocalStorage(o.queryHistoryStorageName, rawData[index]);
             }, that.sc);
 
             that.blurHandler = function () {
@@ -185,11 +186,6 @@
                 that.cache[val] = data;
                 if (data.length && val.length >= o.minChars) {
                     var s = '';
-                    if (o.queryHistoryStorageName) {
-                        var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, val);
-                        console.log(localQueries[0])
-                        for (var i = 0; i < localQueries.length; i++) s += localQueries[i];
-                    }
                     for (var i = 0; i < data.length; i++) s += o.renderItem(data[i], val, i);
                     that.sc.innerHTML = s;
                     that.updateSC(0);
