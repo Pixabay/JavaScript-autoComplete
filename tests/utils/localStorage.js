@@ -95,7 +95,6 @@ describe('Local storage functions', function () {
         var queries = getQueriesFromLocalStorage(testStorageName, 'test');
 
         // THEN
-        console.log(queries)
         expect(queries).toMatchObject(['<b>test</b>ing']);
     });
 
