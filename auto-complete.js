@@ -160,7 +160,7 @@
 
             live('autocomplete-suggestion--local-remove-button', 'mousedown', function (e) {
                 var index = this.parentElement.getAttribute('data-index');
-                this.parentElement.remove()
+                this.parentElement.parentElement.removeChild(this.parentElement);
                 that.cache = removeSuggestionFromCache(that.cache, rawData[index]);
                 removeQueryFromLocalStorage(o.queryHistoryStorageName, rawData[index]);
             }, that.sc);
