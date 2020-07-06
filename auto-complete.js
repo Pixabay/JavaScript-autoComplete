@@ -220,7 +220,14 @@
                 // enter
                 else if (key == 13 || key == 9) {
                     var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                    if (sel && that.sc.style.display != 'none') { o.onSelect(e, sel.getAttribute('data-val'), sel); setTimeout(function () { that.sc.style.display = 'none'; }, 20); }
+                    if (sel && that.sc.style.display != 'none') {
+                        if (o.queryHistoryStorageName) {
+                            var index = sel.getAttribute('data-index');
+                            addQueryToLocalStorage(o.queryHistoryStorageName, rawData[index]);
+                        }
+                        o.onSelect(e, sel.getAttribute('data-val'), sel);
+                        setTimeout(function () { that.sc.style.display = 'none'; }, 20);
+                    }
                 }
             };
             addEvent(that, 'keydown', that.keydownHandler);
