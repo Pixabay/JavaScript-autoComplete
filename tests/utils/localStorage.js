@@ -78,13 +78,13 @@ describe('Local storage functions', function () {
     it('should returned formated queries', function () {
         // GIVEN
         addQueryToLocalStorage(testStorageName, { target: 'first' });
-        addQueryToLocalStorage(testStorageName, { target: 'second' });
+        addQueryToLocalStorage(testStorageName, { target: '[a]bo{b}ora' }); //special characters test
 
         // WHEN
-        var queries = getQueriesFromLocalStorage(testStorageName, 'firs');
+        var queries = getQueriesFromLocalStorage(testStorageName, '[a]bo{b}o');
 
         // THEN
-        expect(queries).toMatchObject([{target:'<b>firs</b>t', isQueryHistory:true}])
+        expect(queries).toMatchObject([{target:'<b>[a]bo{b}o</b>ra', isQueryHistory:true}])
     });
 
     it('should return matched queries with bold propety in matched characters', function () {

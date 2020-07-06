@@ -1,20 +1,23 @@
-function removeSuggestionFromCache(cache, suggestion) {
-    var clean_cache = {};
-    for (var key in cache) {
-        clean_cache[key] = cache[key].filter(function (element) {
-            return JSON.stringify(element).replace(/<\/?b>/g, '') !== JSON.stringify(suggestion).replace(/<\/?b>/g, '');
-        })
-    }
-    return clean_cache;
-}
+const autoComplete = require('../auto-complete');
 
 (function (root, factory) {
     if (typeof module === 'object' && module.exports) {
-        module.exports = factory();
+        module.exports = factory(require('./string'));
     } else {
-        root['autoComplete/utils/cache'] = factory();
+        root['autoComplete/utils/cache'] = factory(root['autoComplete/utils/string']);
     }
-}(typeof self !== 'undefined' ? self : this, function () {
+}(typeof self !== 'undefined' ? self : this, function (_string) {
+    var clearString = _string.clearString;
+
+    function removeSuggestionFromCache(cache, suggestion) {
+        var clean_cache = {};
+        for (var key in cache) {
+            clean_cache[key] = cache[key].filter(function (element) {
+                return clearString(JSON.stringify(element)) !== clearString(JSON.stringify(suggestion));
+            })
+        }
+        return clean_cache;
+    }
     return {
         removeSuggestionFromCache,
     };
