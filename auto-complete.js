@@ -145,10 +145,10 @@
                 this.className += ' selected';
             }, that.sc);
 
-            live('autocomplete-suggestion-text', 'mousedown', function (e) {
-                if (hasClass(this, 'autocomplete-suggestion-text')) { // else outside click
-                    var v = this.parentElement.getAttribute('data-val');
-                    var index = this.parentElement.getAttribute('data-index');
+            live('autocomplete-suggestion', 'mousedown', function (e) {
+                if (hasClass(e.target, 'autocomplete-suggestion')) { // else outside click
+                    var v = this.getAttribute('data-val');
+                    var index = this.getAttribute('data-index');
                     if (o.queryHistoryStorageName) {
                         addQueryToLocalStorage(o.queryHistoryStorageName, rawData[index]);
                     }

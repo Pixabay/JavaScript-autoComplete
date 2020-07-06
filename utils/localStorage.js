@@ -55,7 +55,6 @@
             var matchedQueries = queries.map(function (query) {
                 query = JSON.stringify(query);
                 var regex = new RegExp(term);
-                console.log(regex)
                 var match = regex.exec(query);
                 if (match !== null) {
                     query = query.replace(match[0], `<b>${match[0]}</b>`);

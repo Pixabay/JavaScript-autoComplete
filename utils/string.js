@@ -1,5 +1,4 @@
 function escapeSpecialChars(string) {
-    console.log(string)
     return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');;
 }
 
