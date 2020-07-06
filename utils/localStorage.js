@@ -44,7 +44,7 @@ function getQueriesFromLocalStorage(storageName, term) {
     if (queries !== null) {
         var matchedQueries = queries.map(function (query) {
             query = JSON.stringify(query);
-            var regex = new RegExp(`${term}`);
+            var regex = new RegExp(term);
             var match = regex.exec(query);
             if (match) {
                 query = query.replace(match, `<b>${match}</b>`);
