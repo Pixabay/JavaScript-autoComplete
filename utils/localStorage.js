@@ -68,7 +68,7 @@ function removeDuplicatedQueries(queries) {
         var isLocal = query.isQueryHistory;
         delete query.isQueryHistory;
         var text = JSON.stringify(query).replace(/<\/?b>/g, '')
-        if (!titles.includes(text)) {
+        if (titles.indexOf(text) === -1) {
             titles.push(text);
             query.isQueryHistory = isLocal;
             cleanQueries.push(query);
