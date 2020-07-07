@@ -2,11 +2,9 @@ function escapeSpecialChars(string) {
     return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-function clearString(string) {
+function removeBoldElement(string) {
     return string.replace(/<\/?b>/g, '');
-
 }
-
 
 (function (root, factory) {
     if (typeof module === 'object' && module.exports) {
@@ -18,6 +16,6 @@ function clearString(string) {
 
     return {
         escapeSpecialChars,
-        clearString
+        removeBoldElement
     };
 }));

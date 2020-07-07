@@ -1,6 +1,6 @@
 var _string = require('../../utils/string'),
     escapeSpecialChars = _string.escapeSpecialChars,
-    clearString = _string.clearString;
+    removeBoldElement = _string.removeBoldElement;
 
 describe('String related functions', function () {
     it('should escape with \ all special chars',function(){
@@ -19,7 +19,7 @@ describe('String related functions', function () {
         var string = '<b>test</b>ing';
 
         // WHEN
-        string = clearString(string);
+        string = removeBoldElement(string);
 
         // THEN
         expect(string).toEqual('testing');
