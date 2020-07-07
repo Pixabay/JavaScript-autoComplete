@@ -12,10 +12,10 @@ describe('Cache functions', function () {
         var term = {titulo:'target'};
 
         // WHEN
-        var new_cache = removeSuggestionFromCache(queries, term);
+        var newCache = removeSuggestionFromCache(queries, term);
 
         // THEN
-        expect(new_cache).toMatchObject({
+        expect(newCache).toMatchObject({
             'pref1': [{ titulo: 'any' }, { titulo: 'any' }],
             'pref2': [{ titulo: 'any' }, { titulo: 'any' }],
             'pref3': [{ titulo: 'any' }, { titulo: 'any' }]
