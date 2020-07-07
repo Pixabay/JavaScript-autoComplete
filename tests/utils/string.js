@@ -11,7 +11,7 @@ describe('String related functions', function () {
         string = escapeSpecialChars(string);
 
         // THEN
-        expect(string).toEqual('\\[something\\]\\*\\/\\?\\^\\+\\(\\)\\|\\{\\}\\-')
+        expect(string).toEqual('\\[something\\]\\*\\/\\?\\^\\+\\(\\)\\|\\{\\}\\-');
     });
 
     it('should remove bold mark from string',function(){
