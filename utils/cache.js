@@ -8,7 +8,7 @@
     var clearString = _string.clearString;
 
     function removeSuggestionFromCache(cache, suggestion) {
-        var clean_cache = {};
+        var cleanCache = {};
         for (var key in cache) {
             clean_cache[key] = cache[key].filter(function (element) {
                 return clearString(JSON.stringify(element)) !== clearString(JSON.stringify(suggestion));
