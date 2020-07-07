@@ -12,7 +12,7 @@ function clearString(string) {
     if (typeof module === 'object' && module.exports) {
         module.exports = factory();
     } else {
-        root['autoComplete/utils/localStorage'] = factory();
+        root['autoComplete/utils/string'] = factory();
     }
 }(typeof self !== 'undefined' ? self : this, function () {
 
