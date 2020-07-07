@@ -11,8 +11,8 @@
     } else {
         root.autoComplete = factory(
             root['autoComplete/utils/localStorage'],
-            root['autoComplete/utils/cache'])
-            ;
+            root['autoComplete/utils/cache']
+        );
     }
 }(typeof self !== 'undefined' ? self : this, function (_localStorage, _cache) {
     // "use strict";
