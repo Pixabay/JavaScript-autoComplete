@@ -17,6 +17,6 @@
         return cleanCache;
     }
     return {
-        removeSuggestionFromCache,
+        removeSuggestionFromCache: removeSuggestionFromCache
     };
 }));

@@ -15,7 +15,7 @@ function removeBoldElement(string) {
 }(typeof self !== 'undefined' ? self : this, function () {
 
     return {
-        escapeSpecialChars,
-        removeBoldElement
+        escapeSpecialChars: escapeSpecialChars,
+        removeBoldElement: removeBoldElement
     };
 }));

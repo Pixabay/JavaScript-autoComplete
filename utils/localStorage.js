@@ -87,12 +87,12 @@
         return cleanQueries;
     }
     return {
-        getSuggestionQueries,
-        saveSuggestionQueries,
-        removeQueryFromLocalStorage,
-        addQueryToLocalStorage,
-        getQueriesFromLocalStorage,
-        removeDuplicatedQueries,
-        MAX_LOCAL_QUERIES
+        getSuggestionQueries: getSuggestionQueries,
+        saveSuggestionQueries: saveSuggestionQueries,
+        removeQueryFromLocalStorage: removeQueryFromLocalStorage,
+        addQueryToLocalStorage: addQueryToLocalStorage,
+        getQueriesFromLocalStorage: getQueriesFromLocalStorage,
+        removeDuplicatedQueries: removeDuplicatedQueries,
+        MAX_LOCAL_QUERIES: MAX_LOCAL_QUERIES
     };
 }));
