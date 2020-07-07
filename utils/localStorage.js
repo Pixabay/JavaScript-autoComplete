@@ -57,7 +57,7 @@
                 var regex = new RegExp(term);
                 var match = regex.exec(query);
                 if (match !== null) {
-                    query = query.replace(match[0], `<b>${match[0]}</b>`);
+                    query = query.replace(match[0], '<b>'.concat(match[0],'</b>'));
                     query = JSON.parse(query);
                     query.isQueryHistory = true;
                     return query;
@@ -74,14 +74,14 @@
     function removeDuplicatedQueries(queries) {
         var titles = [];
         var cleanQueries = [];
-        for (var query of queries) {
-            var isLocal = query.isQueryHistory;
-            delete query.isQueryHistory;
-            var text = removeBoldElement(JSON.stringify(query))
+        for (var i=0;i<queries.length; i++) {
+            var isLocal = queries[i].isQueryHistory;
+            delete queries[i].isQueryHistory;
+            var text = removeBoldElement(JSON.stringify(queries[i]))
             if (titles.indexOf(text) === -1) {
                 titles.push(text);
-                query.isQueryHistory = isLocal;
-                cleanQueries.push(query);
+                queries[i].isQueryHistory = isLocal;
+                cleanQueries.push(queries[i]);
             }
         }
         return cleanQueries;
