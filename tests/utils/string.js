@@ -22,6 +22,6 @@ describe('String related functions', function () {
         string = clearString(string);
 
         // THEN
-        expect(string).toEqual('testing')
+        expect(string).toEqual('testing');
     })
 })
