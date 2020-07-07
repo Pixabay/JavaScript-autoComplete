@@ -15,6 +15,26 @@ describe('Local storage functions', function () {
         window.localStorage.removeItem(testStorageName);
     });
 
+    it('should return null if localStorage does not exists', function () {
+        // WHEN
+        var queries = getSuggestionQueries(expect);
+
+        // THEN
+        expect(queries).toEqual(null);
+
+    });
+
+    it('should return empty array when getting from localStorage if throw error', function () {
+        // GIVEN
+        window.localStorage.setItem(testStorageName, "{ { test:broken JSON object }");
+
+        // WHEN
+        var queries = getSuggestionQueries(testStorageName);
+
+        // THEN
+        expect(queries).toEqual([]);
+    })
+
     it('should remove queries from localStorage', function () {
         // GIVEN
         window.localStorage.setItem(testStorageName, JSON.stringify(['any', 'target', 'any']));
@@ -75,6 +95,15 @@ describe('Local storage functions', function () {
         expect(queries).toEqual(['first', 'second']);
     });
 
+
+    it('should return empty arry if localStorage does not exists', function () {
+        // WHEN
+        var queries = getQueriesFromLocalStorage(testStorageName, 'any');
+
+        // THEN
+        expect(queries).toEqual([]);
+    })
+
     it('should returned formated queries', function () {
         // GIVEN
         addQueryToLocalStorage(testStorageName, { target: 'first' });
@@ -84,7 +113,7 @@ describe('Local storage functions', function () {
         var queries = getQueriesFromLocalStorage(testStorageName, '[a]bo{b}o');
 
         // THEN
-        expect(queries).toMatchObject([{target:'<b>[a]bo{b}o</b>ra', isQueryHistory:true}])
+        expect(queries).toMatchObject([{ target: '<b>[a]bo{b}o</b>ra', isQueryHistory: true }])
     });
 
     it('should return matched queries with bold propety in matched characters', function () {

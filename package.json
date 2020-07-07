@@ -25,7 +25,7 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}"
+      "utils/*.{js,jsx}"
     ],
     "testRegex": "tests/.*",
     "testPathIgnorePatterns": [

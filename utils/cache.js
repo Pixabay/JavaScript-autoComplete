@@ -1,5 +1,3 @@
-const autoComplete = require('../auto-complete');
-
 (function (root, factory) {
     if (typeof module === 'object' && module.exports) {
         module.exports = factory(require('./string'));
