@@ -148,7 +148,7 @@
             }, that.sc);
 
             live('autocomplete-suggestion', 'mousedown', function (e) {
-                if (getClosest(e.target, '.autocomplete-suggestion')) { // else outside click
+                if (getClosest(e.target, '.autocomplete-suggestion') && !getClosest(e.target,'.autocomplete-suggestion--local-remove-button')) { // else outside click
                     var v = this.getAttribute('data-val');
                     var index = this.getAttribute('data-index');
                     if (o.queryHistoryStorageName) {
