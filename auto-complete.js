@@ -7,14 +7,15 @@
 
 (function (root, factory) {
     if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('./utils/localStorage'), require('./utils/cache'));
+        module.exports = factory(require('./utils/localStorage'), require('./utils/cache'), require('./utils/dom'));
     } else {
         root.autoComplete = factory(
             root['autoComplete/utils/localStorage'],
-            root['autoComplete/utils/cache']
+            root['autoComplete/utils/cache'],
+            root['autoComplete/utils/dom']
         );
     }
-}(typeof self !== 'undefined' ? self : this, function (_localStorage, _cache) {
+}(typeof self !== 'undefined' ? self : this, function (_localStorage, _cache, _dom) {
     // "use strict";
 
     var removeQueryFromLocalStorage = _localStorage.removeQueryFromLocalStorage,
@@ -23,6 +24,7 @@
         removeDuplicatedQueries = _localStorage.removeDuplicatedQueries;
 
     var removeSuggestionFromCache = _cache.removeSuggestionFromCache;
+    var getClosest = _dom.getClosest;
 
     var requestId = 0;
 
@@ -146,7 +148,7 @@
             }, that.sc);
 
             live('autocomplete-suggestion', 'mousedown', function (e) {
-                if (hasClass(e.target, 'autocomplete-suggestion')) { // else outside click
+                if (getClosest(e.target, '.autocomplete-suggestion') && !getClosest(e.target,'.autocomplete-suggestion--local-remove-button')) { // else outside click
                     var v = this.getAttribute('data-val');
                     var index = this.getAttribute('data-index');
                     if (o.queryHistoryStorageName) {
