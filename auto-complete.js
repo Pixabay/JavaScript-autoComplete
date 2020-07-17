@@ -148,7 +148,7 @@
             }, that.sc);
 
             live('autocomplete-suggestion', 'mousedown', function (e) {
-                if (getClosest(e.target, '.autocomplete-suggestion') && !getClosest(e.target,'.autocomplete-suggestion--local-remove-button')) { // else outside click
+                if (getClosest(e.target, '.autocomplete-suggestion') && !getClosest(e.target, '.autocomplete-suggestion--local-remove-button')) { // else outside click
                     var v = this.getAttribute('data-val');
                     var index = this.getAttribute('data-index');
                     if (o.queryHistoryStorageName) {
@@ -181,7 +181,7 @@
                 var val = that.value;
                 if (o.queryHistoryStorageName) {
                     var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, val);
-                    if(val.length>= o.minChars){
+                    if (val.length >= o.minChars) {
                         data = localQueries.concat(data);
                         data = removeDuplicatedQueries(data);
                     } else {
@@ -199,13 +199,14 @@
                 else
                     that.sc.style.display = 'none';
             }
-            addEvent(that,'click',function(e){
-                if(o.queryHistoryStorageName){
-                    o.source(that.value,suggest);
+            addEvent(that, 'click', function (e) {
+                if (o.queryHistoryStorageName) {
+                    o.source(that.value, suggest);
                 }
             });
 
             that.keydownHandler = function (e) {
+
                 var key = window.event ? e.keyCode : e.which;
                 // down (40), up (38)
                 if ((key == 40 || key == 38) && that.sc.innerHTML) {
@@ -273,7 +274,7 @@
                             }, o.delay);
                         }
                     } else {
-                        if(o.queryHistoryStorageName){
+                        if (o.queryHistoryStorageName) {
                             suggest([]);
                         } else {
                             that.last_val = val;
