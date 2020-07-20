@@ -78,7 +78,9 @@
                 return '<div class="autocomplete-suggestion" data-val="' + item + '" data-index="' + suggestionIndex + '">' + item.replace(re, "<b>$1</b>") + '</div>';
             },
             onSelect: function (e, term, item) { },
-            queryHistoryStorageName: null
+            queryHistoryStorageName: null,
+            formSelector: null,
+            termStructuring: function (term) { term }
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
@@ -206,6 +208,12 @@
                     suggest([]);
                 }
             });
+
+            if (document.querySelector(o.formSelector) && o.queryHistoryStorageName) {
+                addEvent(document.querySelector(o.formSelector), 'submit', function (e) {
+                    addQueryToLocalStorage(o.queryHistoryStorageName, o.termStructuring(that.value.toLocaleLowerCase()));
+                });
+            }
 
             that.keydownHandler = function (e) {
 
