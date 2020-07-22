@@ -200,7 +200,7 @@
                     that.sc.style.display = 'none';
             }
             addEvent(that, 'click', function (e) {
-                if (that.value.length>=o.minChars) {
+                if (that.value.length >= o.minChars) {
                     o.source(that.value, suggest);
                 } else {
                     suggest([]);
