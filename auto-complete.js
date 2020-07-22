@@ -75,7 +75,7 @@
                 // escape special characters
                 search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-                return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
+                return '<div class="autocomplete-suggestion" data-val="' + item + '" data-index="' + suggestionIndex + '">' + item.replace(re, "<b>$1</b>") + '</div>';
             },
             onSelect: function (e, term, item) { },
             queryHistoryStorageName: null
@@ -148,7 +148,7 @@
             }, that.sc);
 
             live('autocomplete-suggestion', 'mousedown', function (e) {
-                if (getClosest(e.target, '.autocomplete-suggestion') && !getClosest(e.target,'.autocomplete-suggestion--local-remove-button')) { // else outside click
+                if (getClosest(e.target, '.autocomplete-suggestion') && !getClosest(e.target, '.autocomplete-suggestion--local-remove-button')) { // else outside click
                     var v = this.getAttribute('data-val');
                     var index = this.getAttribute('data-index');
                     if (o.queryHistoryStorageName) {
@@ -181,12 +181,16 @@
                 var val = that.value;
                 if (o.queryHistoryStorageName) {
                     var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, val);
-                    data = localQueries.concat(data);
-                    data = removeDuplicatedQueries(data);
+                    if (val.length >= o.minChars) {
+                        data = localQueries.concat(data);
+                        data = removeDuplicatedQueries(data);
+                    } else {
+                        data = localQueries;
+                    }
                 }
                 rawData = data;
                 that.cache[val] = data;
-                if (data.length && val.length >= o.minChars) {
+                if (data.length) {
                     var s = '';
                     for (var i = 0; i < data.length; i++) s += o.renderItem(data[i], val, i);
                     that.sc.innerHTML = s;
@@ -195,8 +199,16 @@
                 else
                     that.sc.style.display = 'none';
             }
+            addEvent(that, 'click', function (e) {
+                if (that.value.length >= o.minChars) {
+                    o.source(that.value, suggest);
+                } else {
+                    suggest([]);
+                }
+            });
 
             that.keydownHandler = function (e) {
+
                 var key = window.event ? e.keyCode : e.which;
                 // down (40), up (38)
                 if ((key == 40 || key == 38) && that.sc.innerHTML) {
@@ -264,8 +276,12 @@
                             }, o.delay);
                         }
                     } else {
-                        that.last_val = val;
-                        that.sc.style.display = 'none';
+                        if (o.queryHistoryStorageName) {
+                            suggest([]);
+                        } else {
+                            that.last_val = val;
+                            that.sc.style.display = 'none';
+                        }
                     }
                 }
             };

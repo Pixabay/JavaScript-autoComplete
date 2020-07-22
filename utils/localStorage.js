@@ -57,7 +57,9 @@
                 var regex = new RegExp(term);
                 var match = regex.exec(query);
                 if (match !== null) {
-                    query = query.replace(match[0], '<b>'.concat(match[0],'</b>'));
+                    if (term.length){
+                        query = query.replace(match[0], '<b>'.concat(match[0],'</b>'));
+                    }
                     query = JSON.parse(query);
                     query.isQueryHistory = true;
                     return query;
