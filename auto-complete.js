@@ -80,7 +80,7 @@
             onSelect: function (e, term, item) { },
             queryHistoryStorageName: null,
             formSelector: null,
-            termStructuring: function (term) { term }
+            buildTerm: function (term) { return term }
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
@@ -211,7 +211,7 @@
 
             if (document.querySelector(o.formSelector) && o.queryHistoryStorageName) {
                 addEvent(document.querySelector(o.formSelector), 'submit', function (e) {
-                    addQueryToLocalStorage(o.queryHistoryStorageName, o.termStructuring(that.value.toLocaleLowerCase()));
+                    addQueryToLocalStorage(o.queryHistoryStorageName, o.buildTerm(that.value.toLocaleLowerCase()));
                 });
             }
 
