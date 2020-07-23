@@ -284,10 +284,10 @@
                             }, o.delay);
                         }
                     } else {
+                        that.last_val = val;
                         if (o.queryHistoryStorageName) {
                             suggest([]);
                         } else {
-                            that.last_val = val;
                             that.sc.style.display = 'none';
                         }
                     }

@@ -67,7 +67,7 @@
                 return null;
             });
             matchedQueries = matchedQueries.filter(function (value) { return value !== null });
-            return matchedQueries;
+            return matchedQueries.reverse();
         }
         return [];
     }

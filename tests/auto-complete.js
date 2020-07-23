@@ -70,8 +70,8 @@ describe('Autocomplete Instance', function () {
 
         // THEN
         expect(removeSpaces(suggestions.innerHTML)).toBe(removeSpaces(`
-        <div class="autocomplete-suggestion" data-val="1" data-index="0"><b></b>1<b></b></div>
-        <div class="autocomplete-suggestion" data-val="2" data-index="1"><b></b>2<b></b></div>
+        <div class="autocomplete-suggestion" data-val="2" data-index="0"><b></b>2<b></b></div>
+        <div class="autocomplete-suggestion" data-val="1" data-index="1"><b></b>1<b></b></div>
         `));
     });
 
@@ -117,11 +117,11 @@ describe('Autocomplete Instance', function () {
 
         // THEN
         expect(removeSpaces(suggestions.innerHTML)).toBe(removeSpaces(`
-        <div class="autocomplete-suggestion" data-val="<b>su</b>ggestion local 1" data-index="0">
-            <b><b>su</b></b>ggestion local 1
-        </div>
-        <div class="autocomplete-suggestion" data-val="<b>su</b>ggestion local 2" data-index="1">
+        <div class="autocomplete-suggestion" data-val="<b>su</b>ggestion local 2" data-index="0">
             <b><b>su</b></b>ggestion local 2
+        </div>
+        <div class="autocomplete-suggestion" data-val="<b>su</b>ggestion local 1" data-index="1">
+            <b><b>su</b></b>ggestion local 1
         </div>
         `));
     });
@@ -200,11 +200,11 @@ describe('Autocomplete Instance', function () {
 
         // THEN
         expect(removeSpaces(suggestions.innerHTML)).toBe(removeSpaces(`
-        <div class="autocomplete-suggestion" data-val="<b>sugg</b>estion local 1" data-index="0">
-            <b><b>sugg</b></b>estion local 1
-        </div>
-        <div class="autocomplete-suggestion" data-val="<b>sugg</b>estion local 2" data-index="1">
+        <div class="autocomplete-suggestion" data-val="<b>sugg</b>estion local 2" data-index="0">
             <b><b>sugg</b></b>estion local 2
+        </div>
+        <div class="autocomplete-suggestion" data-val="<b>sugg</b>estion local 1" data-index="1">
+            <b><b>sugg</b></b>estion local 1
         </div>
         <div class="autocomplete-suggestion" data-val="suggestion 1" data-index="2">
             <b>sugg</b>estion 1
