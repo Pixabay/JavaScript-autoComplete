@@ -57,8 +57,8 @@
                 var regex = new RegExp(term);
                 var match = regex.exec(query);
                 if (match !== null) {
-                    if (term.length){
-                        query = query.replace(match[0], '<b>'.concat(match[0],'</b>'));
+                    if (term.length) {
+                        query = query.replace(match[0], '<b>'.concat(match[0], '</b>'));
                     }
                     query = JSON.parse(query);
                     query.isQueryHistory = true;
@@ -76,7 +76,7 @@
     function removeDuplicatedQueries(queries) {
         var titles = [];
         var cleanQueries = [];
-        for (var i=0;i<queries.length; i++) {
+        for (var i = 0; i < queries.length; i++) {
             var isLocal = queries[i].isQueryHistory;
             delete queries[i].isQueryHistory;
             var text = removeBoldElement(JSON.stringify(queries[i]))
