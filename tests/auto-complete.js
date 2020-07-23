@@ -14,11 +14,14 @@ describe('Autocomplete Instance', function () {
 
     beforeEach(function () {
         document.body.innerHTML = `
-        <fieldset>
-            <div class="input"><input type="search" class="Test">
-            </div>
-        </fieldset>`.trim();
-    })
+        <form class="TestForm">
+            <fieldset>
+                <div class="input"><input type="search" class="Test">
+                </div>
+            </fieldset>
+        </form>`.trim();
+        window.localStorage.removeItem('localTest');
+    });
 
     it('should add class "autocomplete-suggestion"', function () {
         // WHEN
@@ -28,11 +31,13 @@ describe('Autocomplete Instance', function () {
 
         // THEN
         expect(removeSpaces(document.body.innerHTML)).toBe(removeSpaces(`
-        <fieldset>
-            <div class="input"><input type="search" class="Test" autocomplete="off">
-                <div class="autocomplete-suggestions"></div>
-           </div>
-        </fieldset>
+        <form class="TestForm">
+            <fieldset>
+                <div class="input"><input type="search" class="Test" autocomplete="off">
+                    <div class="autocomplete-suggestions"></div>
+               </div>
+            </fieldset>
+        </form>
         `));
     });
 
@@ -54,7 +59,7 @@ describe('Autocomplete Instance', function () {
             selector: '.Test',
             source: function (a, callback) { callback([]) },
             queryHistoryStorageName: 'localTest'
-        })
+        });
         window.localStorage.setItem('localTest', JSON.stringify(['1', '2']))
         var clickEvent = new Event('click');
         var inputBox = document.querySelector('.Test');
@@ -288,4 +293,45 @@ describe('Autocomplete Instance', function () {
         expect(selectFunction).toHaveBeenCalled();
     });
 
+    it('should add query to local storage if queryHistoryStorageName is not null and form is submitted', function () {
+        // GIVEN
+        autoComplete({
+            selector: '.Test',
+            source: function (a, callback) { callback([]) },
+            queryHistoryStorageName: 'localTest',
+            formSelector: '.TestForm',
+            buildTerm: function (term) { return term }
+        });
+        var submitEvent = new Event('submit');
+        var form = document.querySelector('.TestForm')
+        var inputBox = document.querySelector('.Test');
+        inputBox.value = 'new suggestion';
+
+        // WHEN
+        form.dispatchEvent(submitEvent);
+        var queries = window.localStorage.getItem('localTest');
+
+        // THEN
+        expect(queries).toBe('["new suggestion"]');
+    });
+
+    it('should not add query to local storage if queryHistoryStorageName or formSelector is null and form is submitted', function () {
+        // GIVEN
+        autoComplete({
+            selector: '.Test',
+            source: function (a, callback) { callback([]) },
+            buildTerm: function (term) { return term }
+        });
+        var submitEvent = new Event('submit');
+        var form = document.querySelector('.TestForm')
+        var inputBox = document.querySelector('.Test');
+        inputBox.value = 'new suggestion';
+
+        // WHEN
+        form.dispatchEvent(submitEvent);
+        var queries = window.localStorage.getItem('localTest');
+
+        // THEN
+        expect(queries).toBe(null);
+    });
 })
