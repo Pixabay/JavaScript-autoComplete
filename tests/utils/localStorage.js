@@ -104,13 +104,13 @@ describe('Local storage functions', function () {
         expect(queries).toEqual([]);
     })
 
-    it('should returned formated queries', function () {
+    it('should returne formated queries', function () {
         // GIVEN
         addQueryToLocalStorage(testStorageName, { target: 'first' });
         addQueryToLocalStorage(testStorageName, { target: '[a]bo{b}ora' }); //special characters test
 
         // WHEN
-        var queries = getQueriesFromLocalStorage(testStorageName, '[a]bo{b}o');
+        var queries = getQueriesFromLocalStorage(testStorageName, { target: '[a]bo{b}o' }, 'target');
 
         // THEN
         expect(queries).toMatchObject([{ target: '<b>[a]bo{b}o</b>ra', isQueryHistory: true }])

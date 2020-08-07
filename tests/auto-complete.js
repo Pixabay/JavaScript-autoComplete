@@ -53,7 +53,7 @@ describe('Autocomplete Instance', function () {
 
     });
 
-    it('should show all local storage queries when queryHistoryStorageName is not null input is empty', function () {
+    it('should show all local storage queries when queryHistoryStorageName is not null and input is empty', function () {
         // GIVEN
         autoComplete({
             selector: '.Test',
