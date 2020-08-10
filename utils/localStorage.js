@@ -62,19 +62,6 @@
                         query.isQueryHistory = true;
                         return query
                     }
-                } else {
-                    term = escapeSpecialChars(term);
-                    query = JSON.stringify(query);
-                    regex = new RegExp(term)
-                    match = regex.exec(query)
-                    if (match !== null) {
-                        if (term.length) {
-                            query = query.replace(match[0], '<b>'.concat(match[0], '</b>'));
-                        }
-                        query = JSON.parse(query);
-                        query.isQueryHistory = true;
-                        return query;
-                    }
                 }
                 return null;
             });

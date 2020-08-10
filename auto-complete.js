@@ -183,7 +183,7 @@
             var suggest = function (data) {
                 var val = that.value;
                 if (o.queryHistoryStorageName) {
-                    var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, o.buildTerm(val), o.target);
+                    var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, o.buildTerm(val.toLowerCase()), o.target);
                     if (val.length >= o.minChars) {
                         data = localQueries.concat(data);
                         data = removeDuplicatedQueries(data);

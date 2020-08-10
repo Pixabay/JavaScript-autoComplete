@@ -118,13 +118,13 @@ describe('Local storage functions', function () {
 
     it('should return matched queries with bold propety in matched characters', function () {
         // GIVEN 
-        addQueryToLocalStorage(testStorageName, 'testing');
+        addQueryToLocalStorage(testStorageName, {target: "testing"});
 
         // WHEN 
-        var queries = getQueriesFromLocalStorage(testStorageName, 'test');
+        var queries = getQueriesFromLocalStorage(testStorageName, { target: "test" }, 'target');
 
         // THEN
-        expect(queries).toMatchObject(['<b>test</b>ing']);
+        expect(queries).toMatchObject([{target:'<b>test</b>ing',isQueryHistory:true}]);
     });
 
     it('should remove queries with same title', function () {
