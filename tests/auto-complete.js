@@ -5,6 +5,19 @@ function removeSpaces(text) {
     return text.trim().replace(/\s/g, '');
 }
 
+function buildTerm(term) {
+    return {
+        target: term
+    }
+}
+
+function renderItem(item, prefix, index) {
+
+    return '<div class="autocomplete-suggestion" data-val="' + item.target + '" data-index="' + index + '">' + item.target + '</div>';
+
+
+}
+
 
 describe('Autocomplete Instance', function () {
     jest.useFakeTimers();
@@ -53,14 +66,17 @@ describe('Autocomplete Instance', function () {
 
     });
 
-    it('should show all local storage queries when queryHistoryStorageName is not null input is empty', function () {
+    it('should show all local storage queries when queryHistoryStorageName is not null and input is empty', function () {
         // GIVEN
         autoComplete({
             selector: '.Test',
             source: function (a, callback) { callback([]) },
-            queryHistoryStorageName: 'localTest'
+            queryHistoryStorageName: 'localTest',
+            buildTerm: buildTerm,
+            renderItem: renderItem,
+            target: 'target'
         });
-        window.localStorage.setItem('localTest', JSON.stringify(['1', '2']))
+        window.localStorage.setItem('localTest', JSON.stringify([{ target: '1' }, { target: '2' }]))
         var clickEvent = new Event('click');
         var inputBox = document.querySelector('.Test');
         var suggestions = document.querySelector('.autocomplete-suggestions');
@@ -70,8 +86,8 @@ describe('Autocomplete Instance', function () {
 
         // THEN
         expect(removeSpaces(suggestions.innerHTML)).toBe(removeSpaces(`
-        <div class="autocomplete-suggestion" data-val="2" data-index="0"><b></b>2<b></b></div>
-        <div class="autocomplete-suggestion" data-val="1" data-index="1"><b></b>1<b></b></div>
+        <div class="autocomplete-suggestion" data-val="<b></b>2" data-index="0"><b></b>2</div>
+        <div class="autocomplete-suggestion" data-val="<b></b>1" data-index="1"><b></b>1</div>
         `));
     });
 
@@ -103,9 +119,12 @@ describe('Autocomplete Instance', function () {
                 callback(['suggestion 1', 'suggestion 2']);
             },
             queryHistoryStorageName: 'localTest',
+            renderItem: renderItem,
+            buildTerm: buildTerm,
+            target: 'target',
             minChars: 3
         });
-        window.localStorage.setItem('localTest', JSON.stringify(['suggestion local 1', 'suggestion local 2']))
+        window.localStorage.setItem('localTest', JSON.stringify([{ target: 'suggestion local 1' }, { target: 'suggestion local 2' }]))
         var keyPressEvent = new KeyboardEvent('keyup');
         var inputBox = document.querySelector('.Test');
         inputBox.value = 'su';
@@ -118,10 +137,10 @@ describe('Autocomplete Instance', function () {
         // THEN
         expect(removeSpaces(suggestions.innerHTML)).toBe(removeSpaces(`
         <div class="autocomplete-suggestion" data-val="<b>su</b>ggestion local 2" data-index="0">
-            <b><b>su</b></b>ggestion local 2
+            <b>su</b>ggestion local 2
         </div>
         <div class="autocomplete-suggestion" data-val="<b>su</b>ggestion local 1" data-index="1">
-            <b><b>su</b></b>ggestion local 1
+            <b>su</b>ggestion local 1
         </div>
         `));
     });
@@ -183,12 +202,15 @@ describe('Autocomplete Instance', function () {
             delay: 0,
             selector: '.Test',
             source: function (a, callback) {
-                callback(['suggestion 1', 'suggestion 2']);
+                callback([{ target: '<b>sugg</b>estion 1' }, { target: '<b>sugg</b>estion 2' }]);
             },
             queryHistoryStorageName: 'localTest',
+            renderItem: renderItem,
+            buildTerm: buildTerm,
+            target: 'target',
             minChars: 3
         });
-        window.localStorage.setItem('localTest', JSON.stringify(['suggestion local 1', 'suggestion local 2']))
+        window.localStorage.setItem('localTest', JSON.stringify([{ target: 'suggestion local 1' }, { target: 'suggestion local 2' }]))
         var keyPressEvent = new KeyboardEvent('keyup');
         var inputBox = document.querySelector('.Test');
         inputBox.value = 'sugg';
@@ -201,15 +223,15 @@ describe('Autocomplete Instance', function () {
         // THEN
         expect(removeSpaces(suggestions.innerHTML)).toBe(removeSpaces(`
         <div class="autocomplete-suggestion" data-val="<b>sugg</b>estion local 2" data-index="0">
-            <b><b>sugg</b></b>estion local 2
+            <b>sugg</b>estion local 2
         </div>
         <div class="autocomplete-suggestion" data-val="<b>sugg</b>estion local 1" data-index="1">
-            <b><b>sugg</b></b>estion local 1
+            <b>sugg</b>estion local 1
         </div>
-        <div class="autocomplete-suggestion" data-val="suggestion 1" data-index="2">
+        <div class="autocomplete-suggestion" data-val="<b>sugg</b>estion 1" data-index="2">
             <b>sugg</b>estion 1
         </div>
-        <div class="autocomplete-suggestion" data-val="suggestion 2" data-index="3">
+        <div class="autocomplete-suggestion" data-val="<b>sugg</b>estion 2" data-index="3">
             <b>sugg</b>estion 2
         </div>
         `));
@@ -220,10 +242,13 @@ describe('Autocomplete Instance', function () {
         autoComplete({
             selector: '.Test',
             source: function (a, callback) { callback([]) },
-            queryHistoryStorageName: 'localTest'
+            queryHistoryStorageName: 'localTest',
+            buildTerm: buildTerm,
+            renderItem: renderItem,
+            target: 'target'
         });
         window.event = 'true';
-        window.localStorage.setItem('localTest', JSON.stringify(['1', '2']))
+        window.localStorage.setItem('localTest', JSON.stringify([{ target: '1' }, { target: '2' }]))
         var clickEvent = new Event('click');
         var arrowEvent = new KeyboardEvent('keydown', { keyCode: 40 });
         var inputBox = document.querySelector('.Test');

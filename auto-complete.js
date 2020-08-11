@@ -80,7 +80,8 @@
             onSelect: function (e, term, item) { },
             queryHistoryStorageName: null,
             formSelector: null,
-            buildTerm: function (term) { return term }
+            buildTerm: function (term) { return term },
+            target: null
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
@@ -182,7 +183,7 @@
             var suggest = function (data) {
                 var val = that.value;
                 if (o.queryHistoryStorageName) {
-                    var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, val);
+                    var localQueries = getQueriesFromLocalStorage(o.queryHistoryStorageName, o.buildTerm(val.toLowerCase()), o.target);
                     if (val.length >= o.minChars) {
                         data = localQueries.concat(data);
                         data = removeDuplicatedQueries(data);

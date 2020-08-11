@@ -48,21 +48,20 @@
         }
     }
 
-    function getQueriesFromLocalStorage(storageName, term) {
+    function getQueriesFromLocalStorage(storageName, term, target) {
         var queries = getSuggestionQueries(storageName);
         if (queries !== null) {
-            term = escapeSpecialChars(term);
             var matchedQueries = queries.map(function (query) {
-                query = JSON.stringify(query);
-                var regex = new RegExp(term);
-                var match = regex.exec(query);
-                if (match !== null) {
-                    if (term.length) {
-                        query = query.replace(match[0], '<b>'.concat(match[0], '</b>'));
+                var match
+                var regex
+                if (target !== null && query[target]) {
+                    regex = new RegExp('^'+escapeSpecialChars(term[target]));
+                    match = regex.exec(query[target]);
+                    if (match !== null) {
+                        query[target] = query[target].replace(match[0], '<b>'.concat(match[0], '</b>'))
+                        query.isQueryHistory = true;
+                        return query
                     }
-                    query = JSON.parse(query);
-                    query.isQueryHistory = true;
-                    return query;
                 }
                 return null;
             });
