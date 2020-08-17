@@ -62,6 +62,8 @@
             });
         }
 
+        var footerBooleanOperators = '<div>foo</div>';
+
         var o = {
             selector: 0,
             source: 0,
@@ -196,7 +198,7 @@
                 if (data.length) {
                     var s = '';
                     for (var i = 0; i < data.length; i++) s += o.renderItem(data[i], val, i);
-                    that.sc.innerHTML = s;
+                    that.sc.innerHTML = s + footerBooleanOperators;
                     that.updateSC(0);
                 }
                 else
