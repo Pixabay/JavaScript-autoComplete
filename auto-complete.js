@@ -62,7 +62,43 @@
             });
         }
 
-        var footerBooleanOperators = '<div>foo</div>';
+
+    window.changeText = () => {
+            
+        const newText = 
+             `
+             <div style="margin: 0.4em" class="row">
+                <span style="font-size: 10px" type="button" class="chip chip--outline chip--sm" data-toggle="tooltip" data-placement="bottom-right"
+                    data-tooltip ="Identifique as palavras ou termos que, obrigatoriamente, estejam na sua pesquisa.
+                    Exemplo: Direitos E Humanos">
+                    E
+                </span>
+                <span style="font-size: 10px" type="button" data-container="body" class="chip chip--outline chip--sm" data-toggle="tooltip" data-placement="bottom-right"
+                    data-tooltip ="Identifique palavras ou termos para obter resultados com pelo menos uma das palavras-chave especificadas. 
+                    É possível utilizar parênteses para agrupar frases.Exemplo: (Dano moral) OU (Recurso Especial)" >
+                    OU
+                </span>
+                <span style="font-size: 12px" type="button" class="chip chip--outline chip--sm" data-toggle="tooltip" data-placement="top-left"
+                    data-tooltip ="Nenhum dos resultados conterão o(s) termo(s)excludentes, indicados após o NÃO.Exemplo: (dano moral) NÃO material" >
+                    Não Incluir
+                </span>
+                <span style="font-size: 12px" type="button" class="chip chip--outline chip--sm" data-toggle="tooltip" data-placement="bottom-right"
+                    data-tooltip ="Os resultados conterão os termos na ordem exata e com a exata grafia indicada.Exemplo: princípio da presunção de inocência">
+                    Exatamente
+                </span>
+            </div> `  
+
+        document.getElementById('search').innerHTML = newText;           
+
+    }
+        var footerBooleanOperators = `
+            <hr style="margin: 0.4em">
+            <div id= "search" style="margin-left: 0.6em" >
+                <button class="btn btn--flat btn--blue" style="font-size: 10px" onclick= "changeText()" >
+                     DICAS PARA ESPECIFICAR SUA BUSCA
+                </button>
+            </div>`
+    
 
         var o = {
             selector: 0,
