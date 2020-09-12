@@ -41,7 +41,7 @@ var autoComplete = (function(){
                 // escape special characters
                 search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
                 var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-                return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
+                return '<div class="autocomplete-suggestion" data-val="' + item.replace("\"", "&quot;").replace("'", "&apos;") + '">' + item.replace(re, "<b>$1</b>") + '</div>';
             },
             onSelect: function(e, term, item){}
         };
