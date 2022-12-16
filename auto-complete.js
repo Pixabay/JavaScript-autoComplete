@@ -204,7 +204,7 @@ var autoComplete = (function(){
                     that.setAttribute('autocomplete', that.autocompleteAttr);
                 else
                     that.removeAttribute('autocomplete');
-                that.sc.remove();
+                (that.sc && that.sc.remove());
                 that = null;
             }
         };
