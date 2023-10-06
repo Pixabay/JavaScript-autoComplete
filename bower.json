@@ -27,5 +27,9 @@
         "bower.json",
         "demo.html",
         "readme.md"
+    ],
+    "main": [
+    	"auto-complete.js",
+    	"auto-complete.css"
     ]
 }
