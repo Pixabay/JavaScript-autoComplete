@@ -1,9 +1,11 @@
 /*
-    JavaScript autoComplete v1.0.4
+    JavaScript autoComplete v1.2.0
     Copyright (c) 2014 Simon Steinberger / Pixabay
     GitHub: https://github.com/Pixabay/JavaScript-autoComplete
     License: http://www.opensource.org/licenses/mit-license.php
 */
+
+// Chrome 41+, Edge 15+, Safari 9+, Firefox 35+, Opera 28+, all mobile browsers
 
 var autoComplete = (function(){
     // "use strict";
@@ -11,21 +13,11 @@ var autoComplete = (function(){
         if (!document.querySelector) return;
 
         // helpers
-        function hasClass(el, className){ return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className); }
-
-        function addEvent(el, type, handler){
-            if (el.attachEvent) el.attachEvent('on'+type, handler); else el.addEventListener(type, handler);
-        }
-        function removeEvent(el, type, handler){
-            // if (el.removeEventListener) not working in IE11
-            if (el.detachEvent) el.detachEvent('on'+type, handler); else el.removeEventListener(type, handler);
-        }
-        function live(elClass, event, cb, context){
-            addEvent(context || document, event, function(e){
-                var found, el = e.target || e.srcElement;
-                while (el && !(found = hasClass(el, elClass))) el = el.parentElement;
-                if (found) cb.call(el, e);
-            });
+        function live(selector, event, cb, context){
+            context.addEventListener(event, function(e){
+                var t = (e.target || e.srcElement).closest(selector);
+                t && cb.call(t, e);
+            }, true);
         }
 
         var o = {
@@ -37,186 +29,292 @@ var autoComplete = (function(){
             offsetTop: 1,
             cache: 1,
             menuClass: '',
-            renderItem: function (item, search){
+            clickToShow: 1,
+            closeOnTap: 1,
+            renderItem: function(item, search){
                 // escape special characters
-                search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-                var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-                return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
+                var si = document.createElement('div');
+                si.className = 'autocomplete-suggestion';
+                si.setAttribute('data-val', item); // see PR#86
+                try{
+                    search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    si.innerHTML = item.replace(new RegExp("(" + search.split(' ').join('|') + ")", "gi"), "<b>$1</b>");
+                }catch(e){
+                    si.textContent = item;
+                }
+                return si;
             },
-            onSelect: function(e, term, item){}
+            renderItems: function (data, search, ipt){
+                var tp = document.createElement('template');
+                var df = tp.content;
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    var si = o.renderItem(item, search);
+                    if (typeof si == 'string') tp.innerHTML += si;
+                    else if (si && si.nodeType == 1) df.appendChild(si);
+                }
+                var _sc = ipt.sc;
+                var firstChild;
+                while (firstChild = _sc.firstChild) firstChild.remove();
+                _sc.appendChild(df);
+            },
+            onSelect: function(e, term, item){},
+            onRender: function(data, val, ipt){},
         };
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
-        // init
-        var elems = typeof o.selector == 'object' ? [o.selector] : document.querySelectorAll(o.selector);
-        for (var i=0; i<elems.length; i++) {
-            var that = elems[i];
+        var forEach = function (ipt) {
 
+            ipt._currentRequestId = 0;
             // create suggestions container "sc"
-            that.sc = document.createElement('div');
-            that.sc.className = 'autocomplete-suggestions '+o.menuClass;
+            ipt.sc = document.createElement('div');
+            ipt.sc.className = 'autocomplete-suggestions '+o.menuClass;
+            ipt.sc.style.display = 'none';
 
-            that.autocompleteAttr = that.getAttribute('autocomplete');
-            that.setAttribute('autocomplete', 'off');
-            that.cache = {};
-            that.last_val = '';
+            ipt.pivot = document.createElement('autocomplete-holder');
+            ipt.autocompleteAttr = ipt.getAttribute('autocomplete');
+            ipt.setAttribute('autocomplete', 'off');
+            ipt.cache = new Map(); // changed from {} to Map; related to PR#37 PR#38
+            ipt.last_val = '';
 
-            that.updateSC = function(resize, next){
-                var rect = that.getBoundingClientRect();
-                that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
-                that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
-                that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
-                if (!resize) {
-                    that.sc.style.display = 'block';
-                    if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
-                    if (!that.sc.suggestionHeight) that.sc.suggestionHeight = that.sc.querySelector('.autocomplete-suggestion').offsetHeight;
-                    if (that.sc.suggestionHeight)
-                        if (!next) that.sc.scrollTop = 0;
-                        else {
-                            var scrTop = that.sc.scrollTop, selTop = next.getBoundingClientRect().top - that.sc.getBoundingClientRect().top;
-                            if (selTop + that.sc.suggestionHeight - that.sc.maxHeight > 0)
-                                that.sc.scrollTop = selTop + that.sc.suggestionHeight + scrTop - that.sc.maxHeight;
-                            else if (selTop < 0)
-                                that.sc.scrollTop = selTop + scrTop;
-                        }
-                }
-            }
-            addEvent(window, 'resize', that.updateSC);
-            document.body.appendChild(that.sc);
-
-            live('autocomplete-suggestion', 'mouseleave', function(e){
-                var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); }, 20);
-            }, that.sc);
-
-            live('autocomplete-suggestion', 'mouseover', function(e){
-                var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                if (sel) sel.className = sel.className.replace('selected', '');
-                this.className += ' selected';
-            }, that.sc);
-
-            live('autocomplete-suggestion', 'mousedown', function(e){
-                if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
-                    var v = this.getAttribute('data-val');
-                    that.value = v;
-                    o.onSelect(e, v, this);
-                    that.sc.style.display = 'none';
-                }
-            }, that.sc);
-
-            that.blurHandler = function(){
-                try { var over_sb = document.querySelector('.autocomplete-suggestions:hover'); } catch(e){ var over_sb = 0; }
-                if (!over_sb) {
-                    that.last_val = that.value;
-                    that.sc.style.display = 'none';
-                    setTimeout(function(){ that.sc.style.display = 'none'; }, 350); // hide suggestions on fast input
-                } else if (that !== document.activeElement) setTimeout(function(){ that.focus(); }, 20);
-            };
-            addEvent(that, 'blur', that.blurHandler);
-
-            var suggest = function(data){
-                var val = that.value;
-                that.cache[val] = data;
-                if (data.length && val.length >= o.minChars) {
-                    var s = '';
-                    for (var i=0;i<data.length;i++) s += o.renderItem(data[i], val);
-                    that.sc.innerHTML = s;
-                    that.updateSC(0);
-                }
-                else
-                    that.sc.style.display = 'none';
+            ipt.updateSize = function(){
+                var pivot = ipt.pivot;
+                var rect = ipt.getBoundingClientRect();
+                pivot.style.width = rect.width+'px';
+                // pivot.style.height = rect.height+'px';
+                pivot.style.marginTop = rect.height+'px';
+                // pivot.style.marginBottom = -rect.height+'px';
             }
 
-            that.keydownHandler = function(e){
-                var key = window.event ? e.keyCode : e.which;
-                // down (40), up (38)
-                if ((key == 40 || key == 38) && that.sc.innerHTML) {
-                    var next, sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                    if (!sel) {
-                        next = (key == 40) ? that.sc.querySelector('.autocomplete-suggestion') : that.sc.childNodes[that.sc.childNodes.length - 1]; // first : last
-                        next.className += ' selected';
-                        that.value = next.getAttribute('data-val');
-                    } else {
-                        next = (key == 40) ? sel.nextSibling : sel.previousSibling;
-                        if (next) {
-                            sel.className = sel.className.replace('selected', '');
-                            next.className += ' selected';
-                            that.value = next.getAttribute('data-val');
+            ipt.isSCVisible = function(){
+                var style = ipt.sc.style;
+                return style.display != 'none';
+            }
+            ipt.hideSC = function(){
+                var style = ipt.sc.style;
+                style.display != 'none' && (style.display = 'none');
+            }
+
+            ipt.showSC = function(){
+                var style = ipt.sc.style;
+                style.display == 'none' && (style.display = 'block');
+            }
+
+            ipt.updateSC = function(next){ // see issue mentioned in PR#49
+
+                ipt.updateSize();
+                var pivot = ipt.pivot;
+                var _sc = ipt.sc;
+                (_sc.parentNode == pivot) || pivot.appendChild(_sc);
+                (ipt.nextSibling == pivot) || ipt.parentNode.insertBefore(pivot, ipt);
+                ipt.showSC();
+
+                if (!next) _sc.scrollTop = 0;
+                else {
+                    var rectSC = _sc.getBoundingClientRect();
+                    if (rectSC.height > 0) {
+                        var rectNext = next.getBoundingClientRect();
+                        var a = rectNext.top - rectSC.top;
+                        var b = rectNext.bottom - rectSC.bottom;
+                        if (b > 0) {
+                            _sc.scrollTop += b;
+                        } else if (a < 0) {
+                            _sc.scrollTop += a;
                         }
-                        else { sel.className = sel.className.replace('selected', ''); that.value = that.last_val; next = 0; }
                     }
-                    that.updateSC(0, next);
-                    return false;
                 }
-                // esc
-                else if (key == 27) { that.value = that.last_val; that.sc.style.display = 'none'; }
-                // enter
-                else if (key == 13 || key == 9) {
-                    var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                    if (sel && that.sc.style.display != 'none') { o.onSelect(e, sel.getAttribute('data-val'), sel); setTimeout(function(){ that.sc.style.display = 'none'; }, 20); }
+
+            };
+            // window.addEventListener('resize', ipt.updateSC);
+
+            //  ipt.pivot.appendChild(ipt.sc);
+            ipt.parentNode.insertBefore(ipt.pivot, ipt); // avoid Safari's minor layout bug
+
+            ipt.sc.addEventListener('mouseleave', function(e){
+                var sel = ipt.sc.querySelector('.autocomplete-suggestion.selected');
+                sel.classList.remove('selected');
+            });
+
+            live('.autocomplete-suggestion', 'mouseenter', function(e){
+                var sel = ipt.sc.querySelector('.autocomplete-suggestion.selected');
+                if (sel) sel.classList.remove('selected');
+                this.classList.add('selected');
+            }, ipt.sc);
+
+            live('.autocomplete-suggestion', 'pointerdown', function(e){
+                e.stopPropagation();
+                e.preventDefault();
+                if (!e.button) { // only left click
+                    var v = ipt.value = this.getAttribute('data-val');
+                    o.onSelect(e, v, this);
+                    o.closeOnTap && ipt.hideSC();
+                }
+            }, ipt.sc);
+
+            var suggest = function(data, val){ // see PR#28
+                if (typeof val == 'string') {
+                    (data instanceof Array) && ipt.cache.set(val, data);
+                    ipt.triggerSC(data, val, val.length >= o.minChars);
                 }
             };
-            addEvent(that, 'keydown', that.keydownHandler);
 
-            that.keyupHandler = function(e){
-                var key = window.event ? e.keyCode : e.which;
-                if (!key || (key < 35 || key > 40) && key != 13 && key != 27) {
-                    var val = that.value;
-                    if (val.length >= o.minChars) {
-                        if (val != that.last_val) {
-                            that.last_val = val;
-                            clearTimeout(that.timer);
+
+            // PR#40
+            // Optional method to trigger results programatically
+            ipt.triggerSC = function(data, val, b){
+                if (data.length && b !== false) {
+                    o.renderItems(data, val, ipt);
+                    ipt.updateSC();
+                    o.onRender(data, val, ipt);
+                } else {
+                    ipt.hideSC();
+                }
+            };
+
+            var inputCounter = 0;
+
+            ipt.iptHandlers = {
+                blur(){
+                    ipt.last_val = ipt.value;
+                    ipt.hideSC();
+                },
+                keydown(e){
+                    var key = window.event ? e.keyCode : e.which;
+                    // down (40), up (38)
+                    if ((key == 40 || key == 38) && ipt.sc.lastChild) {
+                        var next, sel = ipt.sc.querySelector('.autocomplete-suggestion.selected');
+                        if (!sel) {
+                            next = (key == 40) ? ipt.sc.querySelector('.autocomplete-suggestion') : ipt.sc.lastChild; // first : last
+                        } else {
+                            next = (key == 40) ? sel.nextSibling : sel.previousSibling;
+                            sel.classList.remove('selected');
+                        }
+                        if (next) {
+                            next.classList.add('selected');
+                            ipt.value = next.getAttribute('data-val');
+                        } else {
+                            ipt.value = ipt.last_val;
+                            next = 0;
+                        }
+                        ipt.updateSC(next);
+                        e.preventDefault();
+                    }
+                    // esc
+                    else if (key == 27) { ipt.value = ipt.last_val; ipt.hideSC(); }
+                    // enter
+                    else if (key == 13 || key == 9) {
+                        var tsc = ipt.sc;
+                        var isVisible = ipt.isSCVisible();
+                        var sel = tsc.querySelector('.autocomplete-suggestion.selected');
+                        if (sel && isVisible) {
+                            o.onSelect(e, sel.getAttribute('data-val'), sel);
+                            ipt.hideSC();
+                        }
+                        if (isVisible) { // PR#8
+                            e.preventDefault();
+                        }
+                        ipt.last_val = ipt.value;
+                    }
+                },
+                input(){
+                    inputCounter++;
+                },
+                keyup(e){
+
+                    if (!inputCounter) return;
+                    inputCounter = 0;
+                    var key = window.event ? e.keyCode : e.which;
+                    if (!key || (key < 35 || key > 40) && key != 13 && key != 27) {
+                        var val = ipt.value;
+                        ipt.last_val = val;
+                        if (val.length >= o.minChars) {
+                            ipt.timer && clearTimeout(ipt.timer);
+                            ipt.timer = 0;
                             if (o.cache) {
-                                if (val in that.cache) { suggest(that.cache[val]); return; }
+                                var c = ipt.cache;
+                                if (c.has(val)) { suggest(c.get(val), val); return; }
                                 // no requests if previous suggestions were empty
-                                for (var i=1; i<val.length-o.minChars; i++) {
-                                    var part = val.slice(0, val.length-i);
-                                    if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
+                                var k = o.minChars;
+                                for (var j = val.length; --j >= k;) {
+                                    var part = val.slice(0, j);
+                                    if (c.has(part) && !c.get(part).length) { suggest([], val); return; }
                                 }
                             }
-                            that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
+                            // PR#5
+                            ipt.timer = setTimeout(function(){
+                                var thisRequestId = ++ipt._currentRequestId;
+                                var _val = ipt.value;
+                                o.source(_val, function (data, val){
+                                    if (thisRequestId == ipt._currentRequestId){
+                                       suggest(data, typeof val === 'string' ? val : _val);
+                                    } 
+                                });
+                            }, o.delay);
+                        } else {
+                            ipt.sc.style.display = 'none';
                         }
-                    } else {
-                        that.last_val = val;
-                        that.sc.style.display = 'none';
+                    }
+                },
+                // focus(e){
+                //     if (!o.minChars) {
+                //         ipt.last_val = '\n';
+                //         ipt.iptHandlers.keyup(e);
+                //     }
+                // },
+
+                click(){
+                    if (o.clickToShow && ipt.isContentNotEmpty()) {
+                        ipt.showSC();
                     }
                 }
-            };
-            addEvent(that, 'keyup', that.keyupHandler);
 
-            that.focusHandler = function(e){
-                that.last_val = '\n';
-                that.keyupHandler(e)
-            };
-            if (!o.minChars) addEvent(that, 'focus', that.focusHandler);
+            }
+
+            for (var h of Object.keys(ipt.iptHandlers)) {
+                ipt.addEventListener(h, ipt.iptHandlers[h]);
+            }
+
+            ipt.destroyAutoComplete = function(){
+                if (ipt) {
+                    // window.removeEventListener('resize', ipt.updateSC);
+                    for (var h of Object.keys(ipt.iptHandlers)) {
+                        ipt.removeEventListener(h, ipt.iptHandlers[h]);
+                    }
+                    if (ipt.autocompleteAttr) ipt.setAttribute('autocomplete', ipt.autocompleteAttr);
+                    else ipt.removeAttribute('autocomplete');
+                    ipt.pivot && ipt.pivot.remove(); // issue#92 PR#93
+                    ipt = null;
+                }
+            }
+
+            ipt.isContentNotEmpty = function () {
+                return (ipt.value || '').length > 0 && (ipt.sc.textContent || '').length > 0;
+            }
+            
+        }
+        // init
+        var elems = typeof o.selector == 'object' ? [o.selector] : document.querySelectorAll(o.selector);
+        for (var i = 0; i < elems.length; i++) {
+            forEach(elems[i]);
         }
 
         // public destroy method
         this.destroy = function(){
-            for (var i=0; i<elems.length; i++) {
-                var that = elems[i];
-                removeEvent(window, 'resize', that.updateSC);
-                removeEvent(that, 'blur', that.blurHandler);
-                removeEvent(that, 'focus', that.focusHandler);
-                removeEvent(that, 'keydown', that.keydownHandler);
-                removeEvent(that, 'keyup', that.keyupHandler);
-                if (that.autocompleteAttr)
-                    that.setAttribute('autocomplete', that.autocompleteAttr);
-                else
-                    that.removeAttribute('autocomplete');
-                document.body.removeChild(that.sc);
-                that = null;
+            var elems = this.elems;
+            if (elems) {
+                this.elems = null;
+                for (var i = 0; i < elems.length; i++) elems[i].destroyAutoComplete();
             }
+            o = null;
         };
+
+        this.elems = elems; // PR#40
     }
     return autoComplete;
 })();
 
 (function(){
-    if (typeof define === 'function' && define.amd)
-        define('autoComplete', function () { return autoComplete; });
-    else if (typeof module !== 'undefined' && module.exports)
-        module.exports = autoComplete;
-    else
-        window.autoComplete = autoComplete;
+    if (typeof define === 'function' && define.amd) define('autoComplete', function () { return autoComplete; });
+    else if (typeof module !== 'undefined' && module.exports) module.exports = autoComplete;
+    else window.autoComplete = autoComplete;
 })();
