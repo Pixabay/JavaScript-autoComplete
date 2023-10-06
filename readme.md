@@ -11,12 +11,12 @@ We have implemented this piece of software in production on [plainJS](https://pl
 
 ## Links
 
-https://cdn.jsdelivr.net/gh/cyfung1031/JavaScript-autoComplete@1.1.0/auto-complete.js
-https://cdn.jsdelivr.net/gh/cyfung1031/JavaScript-autoComplete@1.1.0/auto-complete.min.js
+https://cdn.jsdelivr.net/gh/culefa/JavaScript-autoComplete@1.2.0/auto-complete.js
+https://cdn.jsdelivr.net/gh/culefa/JavaScript-autoComplete@1.2.0/auto-complete.min.js
 
 ## Usage
 ```html
-<script src="https://cdn.jsdelivr.net/gh/cyfung1031/JavaScript-autoComplete@1.1.0/auto-complete.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/culefa/JavaScript-autoComplete@1.2.0/auto-complete.min.js"></script>
 <form onsubmit="return false;" class="pure-form" style="border-top: 1px solid #eee;border-bottom:1px solid #eee;background:#fafafa;margin:30px 0;padding:20px 10px;text-align:center">
     <input id="hero-demo" autofocus type="text" name="q" placeholder="Programming languages ..." style="width:100%;max-width:600px;outline:0">
 </form>
@@ -39,7 +39,7 @@ https://cdn.jsdelivr.net/gh/cyfung1031/JavaScript-autoComplete@1.1.0/auto-comple
 
 ## Demo and Documentation
 
-https://raw.githack.com/cyfung1031/JavaScript-autoComplete/1.1.0/demo.html
+https://raw.githack.com/culefa/JavaScript-autoComplete/1.2.0/demo.html
 
 ## Features
 
@@ -49,6 +49,10 @@ https://raw.githack.com/cyfung1031/JavaScript-autoComplete/1.1.0/demo.html
 * Callbacks
 
 ## Changelog
+
+### Version 1.2.0 - 2023/10/07
+
+* Performance Fix with changes in CSS Layout, and Enhancement in Functionality
 
 ### Version 1.1.0 - 2023/10/06
 

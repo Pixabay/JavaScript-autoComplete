@@ -54,12 +54,14 @@
     <div style="max-width:900px;padding:0 10px;margin:40px auto;text-align:center">
         <h1>autoComplete</h1>
         <h2>An extremely lightweight and powerful vanilla JavaScript completion suggester.</h2>
-        <a style="margin:5px 0" href="https://cdn.jsdelivr.net/gh/cyfung1031/JavaScript-autoComplete@1.1.0/" class="pure-button pure-button-primary button-lg">Download</a>
+        <a style="margin:5px 0" href="https://cdn.jsdelivr.net/gh/culefa/JavaScript-autoComplete@1.2.0/" class="pure-button pure-button-primary button-lg">Download</a>
         &nbsp;
-        <a style="margin:5px 0" href="https://github.com/cyfung1031/JavaScript-autoComplete/tree/1.1.0" class="pure-button button-lg">View on GitHub</a>
+        <a style="margin:5px 0" href="https://github.com/culefa/JavaScript-autoComplete/tree/1.2.0" class="pure-button button-lg">View on GitHub</a>
     </div>
     <form onsubmit="return false;" class="pure-form" style="border-top: 1px solid #eee;border-bottom:1px solid #eee;background:#fafafa;margin:30px 0;padding:20px 10px;text-align:center">
-        <input id="hero-demo" autofocus type="text" name="q" placeholder="Programming languages ..." style="width:100%;max-width:600px;outline:0">
+        <div>
+            <input id="hero-demo" autofocus type="text" name="q" placeholder="Programming languages ..." style="width:100%;max-width:600px;outline:0">
+        </div>
     </form>
     <div style="max-width:900px;margin:auto;padding:0 10px 50px">
         <h3>Overview and Features</h3>
@@ -111,6 +113,8 @@ my_autoComplete.destroy();</code></pre>
             <tr><td>offsetLeft</td><td><i>0</i></td><td>Optional left offset of the suggestions container.</td></tr>
             <tr><td>offsetTop</td><td><i>1</i></td><td>Optional top offset of the suggestions container.</td></tr>
             <tr><td>cache</td><td><i>1</i></td><td>Determines if performed searches should be cached.</td></tr>
+            <tr><td>clickToShow</td><td><i>1</i></td><td>Determines if clicking input should show dropdown.</td></tr>
+            <tr><td>closeOnTap</td><td><i>1</i></td><td>Determines if dropdown should close after tapping item.</td></tr>
             <tr>
                 <td>menuClass</td><td><i>''</i></td>
                 <td>Custom class/es that get/s added to the dropdown menu container.
@@ -135,6 +139,12 @@ my_autoComplete.destroy();</code></pre>
                 <span class="inline-code">event</span> is the event that triggered the callback,
                 <span class="inline-code">term</span> is the selected value.
                 and <span class="inline-code">item</span> is the item rendered by the renderItem function.
+            </td></tr>
+            <tr><td>onRender(data, val, ipt)</td><td colspan="2">
+                A callback function that fires after the suggestion list is rendered (and shown).
+                <span class="inline-code">data</span> is the data,
+                <span class="inline-code">val</span> is the value of input.
+                and <span class="inline-code">ipt</span> is the input element.
             </td></tr>
 
             <tr><td colspan="3">&nbsp;</td></tr>
@@ -166,6 +176,46 @@ my_autoComplete.destroy();</code></pre>
             The source function iterates through an array of (local) choices and we return a new array containing all (lowercased) matches.
             Simple as that.
         </p>
+
+        <h4 style="margin-top:.5em">Searching in local data, position="top" if available space below is not sufficient</h4>
+        <p>
+            Move dropdown upwards if available space below is not sufficent
+        </p>
+        <pre class="prettyprint"><code>var updateDropDownPosition = function(ipt){
+    const pivot = ipt.pivot;
+    const sc = ipt.sc;
+    if(pivot && sc){
+        const rectSC = sc.getBoundingClientRect();
+        const rectIpt = ipt.getBoundingClientRect();
+        pivot.setAttribute('position', (rectSC.height+rectIpt.bottom>document.documentElement.clientHeight)?'top':'bottom');
+    }
+}
+var demoDynamic = new autoComplete({
+    selector: '#dynamic-demo',
+    minChars: 0,
+    source: function(term, response){
+        term = term.toLowerCase();
+        var choices = ['ActionScript', 'AppleScript', 'Asp', 'Assembly', 'BASIC', 'Batch', 'C', 'C++', 'CSS', 'Clojure', 'COBOL', 'ColdFusion', 'Erlang', 'Fortran', 'Groovy', 'Haskell', 'HTML', 'Java', 'JavaScript', 'Lisp', 'Perl', 'PHP', 'PowerShell', 'Python', 'Ruby', 'Scala', 'Scheme', 'SQL', 'TeX', 'XML'];
+        var suggestions = [];
+        for (var i=0;i<choices.length;i++) // PR#77
+            if (choices[i].toLowerCase().indexOf(term)>=0) suggestions.push(choices[i]);
+        response(suggestions);
+    },
+    onRender: function(data, val, ipt){
+        updateDropDownPosition(ipt);
+    }
+});
+document.addEventListener('scroll', function(){
+    let ipt = document.querySelector('#dynamic-demo');
+    updateDropDownPosition(ipt);
+}, true);</code></pre>
+        <p>
+            Move dropdown upwards if available space below is not sufficent.
+        </p>
+        
+        <form onsubmit="return false;" class="pure-form" style="margin:30px 0 40px">
+            <input id="dynamic-demo" autofocus type="text" placeholder="Programming languages ..." style="width:100%;max-width:600px;outline:0">
+        </form>
 
         <h4>AJAX requests</h4>
         <p>
@@ -269,7 +319,7 @@ new autoComplete({
             Source code for this example:
         </p>
         <pre class="prettyprint"><code>new autoComplete({
-    selector: 'input[name=&amp;quot;q&amp;quot;]',
+    selector: 'input[name=&quot;q&quot;]',
     minChars: 1,
     source: function(term, response){
         term = term.toLowerCase();
@@ -322,7 +372,7 @@ new autoComplete({
     <script>
         var demo1 = new autoComplete({
             selector: '#hero-demo',
-            minChars: 1,
+            minChars: 0,
             source: function(term, response){
                 term = term.toLowerCase();
                 var choices = ['ActionScript', 'AppleScript', 'Asp', 'Assembly', 'BASIC', 'Batch', 'C', 'C++', 'CSS', 'Clojure', 'COBOL', 'ColdFusion', 'Erlang', 'Fortran', 'Groovy', 'Haskell', 'HTML', 'Java', 'JavaScript', 'Lisp', 'Perl', 'PHP', 'PowerShell', 'Python', 'Ruby', 'Scala', 'Scheme', 'SQL', 'TeX', 'XML'];
@@ -332,6 +382,35 @@ new autoComplete({
                 response(suggestions);
             }
         });
+
+        var updateDropDownPosition = function(ipt){
+            const pivot = ipt.pivot;
+            const sc = ipt.sc;
+            if(pivot && sc){
+                const rectSC = sc.getBoundingClientRect();
+                const rectIpt = ipt.getBoundingClientRect();
+                pivot.setAttribute('position', (rectSC.height+rectIpt.bottom>document.documentElement.clientHeight)?'top':'bottom');
+            }
+        }
+        var demoDynamic = new autoComplete({
+            selector: '#dynamic-demo',
+            minChars: 0,
+            source: function(term, response){
+                term = term.toLowerCase();
+                var choices = ['ActionScript', 'AppleScript', 'Asp', 'Assembly', 'BASIC', 'Batch', 'C', 'C++', 'CSS', 'Clojure', 'COBOL', 'ColdFusion', 'Erlang', 'Fortran', 'Groovy', 'Haskell', 'HTML', 'Java', 'JavaScript', 'Lisp', 'Perl', 'PHP', 'PowerShell', 'Python', 'Ruby', 'Scala', 'Scheme', 'SQL', 'TeX', 'XML'];
+                var suggestions = [];
+                for (var i=0;i<choices.length;i++) // PR#77
+                    if (choices[i].toLowerCase().indexOf(term)>=0) suggestions.push(choices[i]);
+                response(suggestions);
+            },
+            onRender: function(data, val, ipt){
+                updateDropDownPosition(ipt);
+            }
+        });
+        document.addEventListener('scroll', function(){
+            let ipt = document.querySelector('#dynamic-demo');
+            updateDropDownPosition(ipt);
+        }, true);
 
         (function(){
 
